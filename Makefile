@@ -2,7 +2,7 @@
 CC = g++
 CFLAGS = -std=c++11 -lncurses -lpthread -lportaudio
 DIR = src
-TARGET = model
+TARGET = snake\ battle\ royale
 SRCS := $(shell find $(DIR) -name '*.cpp')
 OBJS = $(SRCS:.c=.o)
 
