@@ -22,14 +22,14 @@ int main ()
   player = new Audio::Player();
   player->init();
   
-  pos_2d p = {0,20};
+  pos_2d p = {20,20};
   vel_2d v = {(float)1.5*VEL,0};
 
   Snake *snake = new Snake();
   for (int i =0; i < 4; i++){
     Corpo *c = new Corpo(v, p);
     snake->add_corpo(c);
-    p.y++;  
+    p.x--;  
   }
 
   ListaDeSnakes *l = new ListaDeSnakes();
@@ -47,8 +47,10 @@ int main ()
   uint64_t deltaT;
   uint64_t T;
 
-  int i = 0;
+  printw("Numero de corpos da cobrinha: %d\n", snake->get_corpos()->size());
 
+
+  getch();
   T = get_now_ms();
   t1 = T;
   while (1) {
@@ -87,12 +89,11 @@ int main ()
         player->play(asample);
         break;
     }
-
+    
     if (c==27)
       break;
 
     std::this_thread::sleep_for (std::chrono::milliseconds(10));
-    i++;
   }
   player->stop();
   tela->stop();

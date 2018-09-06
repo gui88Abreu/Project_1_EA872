@@ -5,6 +5,7 @@ RA: 173691
 
 #include "../include/model/model.hpp"
 #include "../include/controler/controler.hpp"
+#include "../include/view/view.hpp"
 
 Fisica::Fisica(ListaDeSnakes *lds) {
   this->lista = lds;
@@ -18,11 +19,16 @@ void Fisica::update(float deltaT) {
   for (int j = 0; j < s->size(); j++){
     std::vector<Corpo*> *c = (*s)[j]->get_corpos();
     vel_2d vel = (*c)[0]->get_velocidade();
-    pos_2d last_pos = (*c)[0]->get_posicao();
+    std::vector<pos_2d> last_pos(c->size()-1);
     pos_2d new_pos;
+
+    for (int i = 0; i < c->size()-1; i++) {
+      last_pos[i]= (*c)[i]->get_posicao();
+    }
+
     
-    new_pos.x = last_pos.x + deltaT *vel.x;
-    new_pos.y = last_pos.y + deltaT *vel.y;
+    new_pos.x = last_pos[0].x + deltaT *vel.x;
+    new_pos.y = last_pos[0].y + deltaT *vel.y;
 
     if (new_pos.x < 0) {
       new_pos.x  = COLS-1;
@@ -37,14 +43,10 @@ void Fisica::update(float deltaT) {
       new_pos.y  = 0;
     }
 
-    (*c)[0]->update(vel, new_pos);
-    
-    pos_2d front_pos;
-    for (int i = 1; i < (*c).size(); i++) {
-      front_pos = (*c)[i]->get_posicao();
-      (*c)[i]->update(vel, last_pos);
-      last_pos = front_pos;
+    for (int i = 1; i < c->size(); i++) {
+      (*c)[i]->update(vel, last_pos[i-1]);
     }
+    (*c)[0]->update(vel, new_pos);
   }
 }
 

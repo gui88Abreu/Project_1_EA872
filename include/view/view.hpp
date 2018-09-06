@@ -14,7 +14,7 @@ RA: 173691
 
 class Tela {
   private:
-    ListaDeSnakes *lista, *lista_anterior;
+    ListaDeSnakes *lista;
     int maxI, maxJ;
     float maxX, maxY;
 
