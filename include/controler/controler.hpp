@@ -13,7 +13,7 @@ RA: 173691
 
 #include "../model/model.hpp"
 
-const float VEL = 5.0;
+const float VEL = 10.0;
 
 class Fisica {
   private:

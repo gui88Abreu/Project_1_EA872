@@ -33,7 +33,7 @@ void Tela::update() {
     pos_2d p = (*corpos_old)[k]->get_posicao();
     i = (int)p.y * (this->maxI / this->maxX);
     j = (int)p.x * (this->maxI / this->maxX);
-    move(j,i);   /* Move cursor to position */
+    move(i,j);   /* Move cursor to position */
     echochar(' ');  /* Prints character, advances a position */
   }
 
@@ -45,7 +45,9 @@ void Tela::update() {
     pos_2d p = (*corpos)[k]->get_posicao();
     i = (int)p.y * (this->maxI / this->maxX);
     j = (int)p.x * (this->maxI / this->maxX);
-    move(j, i);/* Move cursor to position */
+    if (move(i,j) == ERR){
+      printw("%d %d", j,i);
+    }/* Move cursor to position */
     echochar('*');  /* Prints character, advances a position */
 
     // Atualiza corpos antigos

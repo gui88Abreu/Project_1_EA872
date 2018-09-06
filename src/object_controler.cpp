@@ -24,10 +24,10 @@ void Fisica::update(float deltaT) {
     new_pos.y = last_pos.y + deltaT *vel.y;
 
     if (new_pos.x < 0) {
-      new_pos.x  = COLS;
+      new_pos.x  = COLS-1;
     }
     if (new_pos.y < 0){
-      new_pos.y  = LINES;
+      new_pos.y  = LINES-1;
     }
     if (new_pos.x >= COLS) {
       new_pos.x  = 0;
@@ -50,7 +50,7 @@ void Fisica::change_dir(int direction, int i) {
       new_vel.y = VEL;
       break;
     case 1:
-      new_vel.x = -VEL;
+      new_vel.x = -1.5*VEL;
       new_vel.y = 0;
       break;
     case 2:
@@ -58,7 +58,7 @@ void Fisica::change_dir(int direction, int i) {
       new_vel.y = -VEL;  
       break;
     case 3:
-      new_vel.x = VEL;
+      new_vel.x = 1.5*VEL;
       new_vel.y = 0;
       break;
     default:

@@ -22,8 +22,9 @@ int main ()
   player = new Audio::Player();
   player->init();
   
-  pos_2d p = {0,0};
-  vel_2d v = {5,0};  
+  pos_2d p = {0,20};
+  vel_2d v = {(float)1.5*VEL,0};
+
   Corpo *c1 = new Corpo(10, v, p);
 
   ListaDeCorpos *l = new ListaDeCorpos();
@@ -62,22 +63,22 @@ int main ()
     // Lê o teclado
     char c = teclado->getchar();
     switch (c){
-      case 'd':
+      case 's':
         f->change_dir(0,0);
         asample->set_position(0);
         player->play(asample);
         break;
-      case 'w':
+      case 'a':
         f->change_dir(1,0);
         asample->set_position(0);
         player->play(asample);
         break;
-      case 'a':
+      case 'w':
         f->change_dir(2,0);
         asample->set_position(0);
         player->play(asample);
         break;
-      case 's':
+      case 'd':
         f->change_dir(3,0);
         asample->set_position(0);
         player->play(asample);
@@ -87,7 +88,7 @@ int main ()
     if (c=='q')
       break;
 
-    std::this_thread::sleep_for (std::chrono::milliseconds(100));
+    std::this_thread::sleep_for (std::chrono::milliseconds(10));
     i++;
   }
   player->stop();
