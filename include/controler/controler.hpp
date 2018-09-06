@@ -17,10 +17,10 @@ const float VEL = 10.0;
 
 class Fisica {
   private:
-    ListaDeCorpos *lista;
+    ListaDeSnakes *lista;
 
   public:
-    Fisica(ListaDeCorpos *ldc);
+    Fisica(ListaDeSnakes *lds);
     void change_dir(int direction, int i);
     void add_corpo(Corpo *c);
     void update(float deltaT);

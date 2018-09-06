@@ -6,18 +6,19 @@ RA: 173691
 #include "../include/model/model.hpp"
 #include "../include/controler/controler.hpp"
 
-Fisica::Fisica(ListaDeCorpos *ldc) {
-  this->lista = ldc;
+Fisica::Fisica(ListaDeSnakes *lds) {
+  this->lista = lds;
 }
 
 void Fisica::update(float deltaT) {
   // Atualiza parametros dos corpos!
-  std::vector<Corpo *> *c = this->lista->get_corpos();
+  std::vector<Snake*> *s = this->lista->get_snakes();
   deltaT = deltaT/1000.0;
   
-  for (int i = 0; i < (*c).size(); i++) {
-    vel_2d vel = (*c)[i]->get_velocidade();
-    pos_2d last_pos = (*c)[i]->get_posicao();
+  for (int j = 0; j < s->size(); j++){
+    std::vector<Corpo*> *c = (*s)[j]->get_corpos();
+    vel_2d vel = (*c)[0]->get_velocidade();
+    pos_2d last_pos = (*c)[0]->get_posicao();
     pos_2d new_pos;
     
     new_pos.x = last_pos.x + deltaT *vel.x;
@@ -36,7 +37,14 @@ void Fisica::update(float deltaT) {
       new_pos.y  = 0;
     }
 
-    (*c)[i]->update(vel, new_pos);
+    (*c)[0]->update(vel, new_pos);
+    
+    pos_2d front_pos;
+    for (int i = 1; i < (*c).size(); i++) {
+      front_pos = (*c)[i]->get_posicao();
+      (*c)[i]->update(vel, last_pos);
+      last_pos = front_pos;
+    }
   }
 }
 
@@ -65,6 +73,7 @@ void Fisica::change_dir(int direction, int i) {
       return;
   }
 
-  std::vector<Corpo *> *c = this->lista->get_corpos();
-  (*c)[i]->update(new_vel, (*c)[i]->get_posicao());
+  std::vector<Snake *> *s = this->lista->get_snakes();
+  std::vector<Corpo *> *c = (*s)[i]->get_corpos();
+  (*c)[0]->update(new_vel, (*c)[i]->get_posicao());
 }

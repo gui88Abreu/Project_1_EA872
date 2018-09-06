@@ -19,27 +19,36 @@ typedef pos_2d vel_2d;
 
 class Corpo {
   private:
-  float massa;
   vel_2d velocidade;
   pos_2d posicao;
 
   public:
-  Corpo(float massa, vel_2d velocidade, pos_2d p);
+  Corpo(vel_2d velocidade, pos_2d p);
   void update(vel_2d nova_velocidade, pos_2d);
-  float get_massa();
   vel_2d get_velocidade();
   pos_2d get_posicao();
 };
 
-class ListaDeCorpos {
- private:
+class Snake{
+  private:
     std::vector<Corpo*> *corpos;
 
   public:
-    ListaDeCorpos();
-    void hard_copy(ListaDeCorpos *ldc);
+    Snake();
+    void hard_copy(Snake *ldc);
     void add_corpo(Corpo *c);
     std::vector<Corpo*> *get_corpos();
+};
+
+class ListaDeSnakes {
+  private:
+    std::vector<Snake*> *snakes;
+
+  public:
+    ListaDeSnakes();
+    void hard_copy(ListaDeSnakes *lds);
+    void add_snake(Snake *c);
+    std::vector<Snake*> *get_snakes();
 };
 
 namespace Audio{

@@ -7,9 +7,9 @@ RA: 173691
 #include "../include/view/view.hpp"
 #include "../include/controler/controler.hpp"
 
-Tela::Tela(ListaDeCorpos *ldc, int maxI, int maxJ, float maxX, float maxY) {
-  this->lista = ldc;
-  this->lista_anterior = new ListaDeCorpos();
+Tela::Tela(ListaDeSnakes *lds, int maxI, int maxJ, float maxX, float maxY) {
+  this->lista = lds;
+  this->lista_anterior = new ListaDeSnakes();
   this->lista_anterior->hard_copy(this->lista);
   this->maxI = maxI;
   this->maxJ = maxJ;
@@ -24,34 +24,36 @@ void Tela::init() {
 }
 
 void Tela::update() {
-  int i, j;
-  std::vector<Corpo *> *corpos_old = this->lista_anterior->get_corpos();
+  std::vector<Snake*> *s_old = this->lista_anterior->get_snakes();
+  std::vector<Snake*> *s = this->lista->get_snakes();
 
-  // Apaga corpos na tela
-  for (int k=0; k<corpos_old->size(); k++)
-  {
-    pos_2d p = (*corpos_old)[k]->get_posicao();
-    i = (int)p.y * (this->maxI / this->maxX);
-    j = (int)p.x * (this->maxI / this->maxX);
-    move(i,j);   /* Move cursor to position */
-    echochar(' ');  /* Prints character, advances a position */
-  }
+  for (int k =0; k < s_old->size(); k++){
+    int i, j;
+    std::vector<Corpo *> *corpos_old = (*s_old)[k]->get_corpos();
+    std::vector<Corpo *> *corpos = (*s)[k]->get_corpos();
 
-  // Desenha corpos na tela
-  std::vector<Corpo *> *corpos = this->lista->get_corpos();
+    // Apaga corpos na tela
+    for (int z = 0; z < corpos_old->size(); z++)
+    {
+      pos_2d p = (*corpos_old)[z]->get_posicao();
+      i = (int)p.y * (this->maxI / this->maxX);
+      j = (int)p.x * (this->maxI / this->maxX);
+      move(i,j);   /* Move cursor to position */
+      echochar(' ');  /* Prints character, advances a position */
+    }
 
-  for (int k=0; k<corpos->size(); k++)
-  {
-    pos_2d p = (*corpos)[k]->get_posicao();
-    i = (int)p.y * (this->maxI / this->maxX);
-    j = (int)p.x * (this->maxI / this->maxX);
-    if (move(i,j) == ERR){
-      printw("%d %d", j,i);
-    }/* Move cursor to position */
-    echochar('*');  /* Prints character, advances a position */
+    // Desenha corpos na tela
+    for (int z = 0; z < corpos->size(); z++)
+    {
+      pos_2d p = (*corpos)[z]->get_posicao();
+      i = (int)p.y * (this->maxI / this->maxX);
+      j = (int)p.x * (this->maxI / this->maxX);
+      move(i,j);   /* Move cursor to position */
+      echochar('*');  /* Prints character, advances a position */
 
-    // Atualiza corpos antigos
-    (*corpos_old)[k]->update(  (*corpos)[k]->get_velocidade(),p);
+      // Atualiza corpos antigos
+      (*corpos_old)[z]->update( (*corpos)[z]->get_velocidade(),(*corpos)[z]->get_posicao());
+    }
   }
 
   // Atualiza tela

@@ -14,12 +14,12 @@ RA: 173691
 
 class Tela {
   private:
-    ListaDeCorpos *lista, *lista_anterior;
+    ListaDeSnakes *lista, *lista_anterior;
     int maxI, maxJ;
     float maxX, maxY;
 
   public:
-    Tela(ListaDeCorpos *ldc, int maxI, int maxJ, float maxX, float maxY);
+    Tela(ListaDeSnakes *lds, int maxI, int maxJ, float maxX, float maxY);
     ~Tela();
     void stop();
     void init();
