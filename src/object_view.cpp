@@ -24,15 +24,16 @@ void Tela::init() {
 }
 
 void Tela::update() {
-  int i;
-
+  int i, j;
   std::vector<Corpo *> *corpos_old = this->lista_anterior->get_corpos();
 
   // Apaga corpos na tela
   for (int k=0; k<corpos_old->size(); k++)
   {
-    i = (int) ((*corpos_old)[k]->get_posicao()) * (this->maxI / this->maxX);
-    move(i, COLS/2 - 2  + k);   /* Move cursor to position */
+    pos_2d p = (*corpos_old)[k]->get_posicao();
+    i = (int)p.y * (this->maxI / this->maxX);
+    j = (int)p.x * (this->maxI / this->maxX);
+    move(j,i);   /* Move cursor to position */
     echochar(' ');  /* Prints character, advances a position */
   }
 
@@ -41,13 +42,14 @@ void Tela::update() {
 
   for (int k=0; k<corpos->size(); k++)
   {
-    i = (int) ((*corpos)[k]->get_posicao()) * (this->maxI / this->maxX);
-
-    if (move(i, COLS/2 - 2  + k) == ERR) continue;   /* Move cursor to position */
+    pos_2d p = (*corpos)[k]->get_posicao();
+    i = (int)p.y * (this->maxI / this->maxX);
+    j = (int)p.x * (this->maxI / this->maxX);
+    move(j, i);/* Move cursor to position */
     echochar('*');  /* Prints character, advances a position */
 
     // Atualiza corpos antigos
-    (*corpos_old)[k]->update(  (*corpos)[k]->get_velocidade(),(*corpos)[k]->get_posicao());
+    (*corpos_old)[k]->update(  (*corpos)[k]->get_velocidade(),p);
   }
 
   // Atualiza tela

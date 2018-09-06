@@ -10,18 +10,25 @@ RA: 173691
 #include <vector>
 #include "portaudio.h"
 
+typedef struct Position{
+  float x;
+  float y;
+}pos_2d;
+
+typedef pos_2d vel_2d;
+
 class Corpo {
   private:
   float massa;
-  float velocidade;
-  float posicao;
+  vel_2d velocidade;
+  pos_2d posicao;
 
   public:
-  Corpo(float massa, float velocidade, float posicao);
-  void update(float nova_velocidade, float nova_posicao);
+  Corpo(float massa, vel_2d velocidade, pos_2d p);
+  void update(vel_2d nova_velocidade, pos_2d);
   float get_massa();
-  float get_velocidade();
-  float get_posicao();
+  vel_2d get_velocidade();
+  pos_2d get_posicao();
 };
 
 class ListaDeCorpos {

@@ -22,16 +22,12 @@ int main ()
   player = new Audio::Player();
   player->init();
   
-  Corpo *c1 = new Corpo(10, 0, 20);
-  Corpo *c2 = new Corpo(10, 0, 18);
-  Corpo *c3 = new Corpo(10, 0, 16);
-  Corpo *c4 = new Corpo(10, 0, 14);
+  pos_2d p = {0,0};
+  vel_2d v = {5,0};  
+  Corpo *c1 = new Corpo(10, v, p);
 
   ListaDeCorpos *l = new ListaDeCorpos();
   l->add_corpo(c1);
-  l->add_corpo(c2);
-  l->add_corpo(c3);
-  l->add_corpo(c4);
 
   Fisica *f = new Fisica(l);
 
@@ -65,16 +61,29 @@ int main ()
 
     // Lê o teclado
     char c = teclado->getchar();
-    if (c=='s'){
-      f->choque(1);
-      asample->set_position(0);
-      player->play(asample);
+    switch (c){
+      case 'd':
+        f->change_dir(0,0);
+        asample->set_position(0);
+        player->play(asample);
+        break;
+      case 'w':
+        f->change_dir(1,0);
+        asample->set_position(0);
+        player->play(asample);
+        break;
+      case 'a':
+        f->change_dir(2,0);
+        asample->set_position(0);
+        player->play(asample);
+        break;
+      case 's':
+        f->change_dir(3,0);
+        asample->set_position(0);
+        player->play(asample);
+        break;
     }
-    if(c == 'w'){
-      f->choque(-1);
-      asample->set_position(0);
-      player->play(asample);
-    }
+
     if (c=='q')
       break;
 

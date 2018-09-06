@@ -13,15 +13,15 @@ RA: 173691
 
 #include "../model/model.hpp"
 
+const float VEL = 5.0;
+
 class Fisica {
   private:
     ListaDeCorpos *lista;
-    float k;
-    float b;
-    float ext_force;
+
   public:
     Fisica(ListaDeCorpos *ldc);
-    void choque(int direction);
+    void change_dir(int direction, int i);
     void add_corpo(Corpo *c);
     void update(float deltaT);
 };
