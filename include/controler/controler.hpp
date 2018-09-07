@@ -23,7 +23,7 @@ class Fisica {
     Fisica(ListaDeSnakes *lds);
     void change_dir(int direction, int i);
     void add_corpo(Corpo *c);
-    void update(float deltaT);
+    bool update(float deltaT);
 };
 
 #endif

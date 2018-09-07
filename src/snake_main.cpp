@@ -21,19 +21,29 @@ int main ()
   Audio::Player *player;
   player = new Audio::Player();
   player->init();
-  
-  pos_2d p = {20,20};
-  vel_2d v = {(float)1.5*VEL,0};
+  player->play(asample);
+
+  pos_2d p = {40,40};
+  vel_2d v = {(float)2*VEL,0};
 
   Snake *snake = new Snake();
-  for (int i =0; i < 4; i++){
+  for (int i =0; i < 8; i++){
     Corpo *c = new Corpo(v, p);
     snake->add_corpo(c);
     p.x--;  
   }
 
+  p.x = 20;
+  Snake *snake2 = new Snake();
+  for (int i =0; i < 8; i++){
+    Corpo *c = new Corpo(v, p);
+    snake2->add_corpo(c);
+    p.x--;  
+  }
+
   ListaDeSnakes *l = new ListaDeSnakes();
   l->add_snake(snake);
+  l->add_snake(snake2);
   Fisica *f = new Fisica(l);
 
   Tela *tela = new Tela(l, 20, 20, 20, 20);
@@ -47,10 +57,6 @@ int main ()
   uint64_t deltaT;
   uint64_t T;
 
-  printw("Numero de corpos da cobrinha: %d\n", snake->get_corpos()->size());
-
-
-  getch();
   T = get_now_ms();
   t1 = T;
   while (1) {
@@ -60,7 +66,15 @@ int main ()
     deltaT = t1-t0;
 
     // Atualiza modelo
-    f->update(deltaT);
+    if(f->update(deltaT)) {
+      clear();
+      move((int)LINES/2, (int)COLS/2);
+      printw("GAME OVER");
+      move((int)LINES/2 + 1, (int)COLS/2);
+      printw("PRESS SOMETHING TO EXIT");
+      getch();
+      break;
+    }
 
     // Atualiza tela
     tela->update();
@@ -71,29 +85,41 @@ int main ()
       case 's':
         f->change_dir(0,0);
         asample->set_position(0);
-        player->play(asample);
         break;
       case 'a':
         f->change_dir(1,0);
         asample->set_position(0);
-        player->play(asample);
         break;
       case 'w':
         f->change_dir(2,0);
         asample->set_position(0);
-        player->play(asample);
         break;
       case 'd':
         f->change_dir(3,0);
         asample->set_position(0);
-        player->play(asample);
+        break;
+      case 'k':
+        f->change_dir(0,1);
+        asample->set_position(0);
+        break;
+      case 'j':
+        f->change_dir(1,1);
+        asample->set_position(0);
+        break;
+      case 'i':
+        f->change_dir(2,1);
+        asample->set_position(0);
+        break;
+      case 'l':
+        f->change_dir(3,1);
+        asample->set_position(0);
         break;
     }
     
     if (c==27)
       break;
 
-    std::this_thread::sleep_for (std::chrono::milliseconds(10));
+    std::this_thread::sleep_for (std::chrono::milliseconds(100));
   }
   player->stop();
   tela->stop();
