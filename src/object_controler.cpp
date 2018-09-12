@@ -93,5 +93,5 @@ void Fisica::change_dir(int direction, int i) {
   else if ((new_vel.y < 0 && last_vel.y > 0) || (new_vel.y > 0 && last_vel.y < 0))
     return;
   else
-    (*c)[0]->update(new_vel, (*c)[i]->get_posicao());
+    (*c)[0]->update(new_vel, (*c)[0]->get_posicao());
 }
