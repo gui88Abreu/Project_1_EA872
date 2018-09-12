@@ -49,11 +49,6 @@ bool Fisica::update(float deltaT) {
       (*c)[i]->update(vel, last_pos[i-1]);
     }
     (*c)[0]->update(vel, new_pos);
-
-    for (int i =1; i < c->size(); i++){
-      if ((int)new_pos.x == (int)last_pos[i].x && (int)new_pos.y == (int)last_pos[i].y)
-        return true;
-    }
   }
   return false;
 }
