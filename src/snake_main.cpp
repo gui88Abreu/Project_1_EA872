@@ -30,20 +30,11 @@ int main ()
   for (int i =0; i < 8; i++){
     Corpo *c = new Corpo(v, p);
     snake->add_corpo(c);
-    p.x--;  
-  }
-
-  p.x = 20;
-  Snake *snake2 = new Snake();
-  for (int i =0; i < 8; i++){
-    Corpo *c = new Corpo(v, p);
-    snake2->add_corpo(c);
-    p.x--;  
+    p.x-=2;
   }
 
   ListaDeSnakes *l = new ListaDeSnakes();
   l->add_snake(snake);
-  l->add_snake(snake2);
   Fisica *f = new Fisica(l);
 
   Tela *tela = new Tela(l, 20, 20, 20, 20);
@@ -66,7 +57,7 @@ int main ()
     deltaT = t1-t0;
 
     // Atualiza modelo
-    if(f->update(deltaT)) {
+    if(f->update(deltaT) && deltaT!=0) {
       clear();
       move((int)LINES/2, (int)COLS/2);
       printw("GAME OVER");
@@ -96,22 +87,6 @@ int main ()
         break;
       case 'd':
         f->change_dir(3,0);
-        asample->set_position(0);
-        break;
-      case 'k':
-        f->change_dir(0,1);
-        asample->set_position(0);
-        break;
-      case 'j':
-        f->change_dir(1,1);
-        asample->set_position(0);
-        break;
-      case 'i':
-        f->change_dir(2,1);
-        asample->set_position(0);
-        break;
-      case 'l':
-        f->change_dir(3,1);
         asample->set_position(0);
         break;
     }
