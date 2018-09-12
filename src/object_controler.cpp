@@ -9,9 +9,7 @@ RA: 173691
 
 Fisica::Fisica(ListaDeSnakes *lds) {
   this->lista = lds;
-  for(int i =0; i < LINES; i++)
-    for (int j =0; j < COLS; j++)
-      grid[i][j] = 0;
+  this->food_pos.x =-1.0; food_pos.y = -1.0;
 }
 
 void Fisica::feed_snake(){
@@ -47,7 +45,7 @@ void Fisica::feed_snake(){
     }
   }
 
-  this->grid[y][x] = 1;
+  this->food_pos.x = x, this->food_pos.y =y;
   return;
 }
 
@@ -88,6 +86,13 @@ bool Fisica::update(float deltaT) {
     }
     (*c)[0]->update(vel, new_pos);
     selfkill = this->verify_selfkill(c);
+
+    if ((int)(*c)[c->size()-1]->get_posicao().x == (int)this->food_pos.x \
+        && (int)(*c)[c->size()-1]->get_posicao().y == (int)this->food_pos.y){
+      this->food_pos.x = -1, this->food_pos.y =-1;
+      Corpo *new_corpo = new Corpo(vel, last_pos[c->size()-1]);
+      (*s)[j]->add_corpo(new_corpo);
+    }
   }
   return selfkill;
 }

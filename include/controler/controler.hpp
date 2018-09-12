@@ -25,7 +25,7 @@ class Fisica {
     void change_dir(int direction, int i);
     void add_corpo(Corpo *c);
     bool update(float deltaT);
-    int grid[1000][1000];
+    pos_2d food_pos;
 };
 
 #endif
