@@ -156,11 +156,11 @@ void Fisica::change_dir(int direction, int i) {
   // Atualiza parametros dos corpos!
   vel_2d new_vel;
   vel_2d last_vel;
-
+  float vy = VEL;
   switch (direction){
     case 0:
       new_vel.x = 0;
-      new_vel.y = VEL;
+      new_vel.y = vy;
       break;
     case 1:
       new_vel.x = -VEL;
@@ -168,7 +168,7 @@ void Fisica::change_dir(int direction, int i) {
       break;
     case 2:
       new_vel.x = 0;
-      new_vel.y = -VEL;  
+      new_vel.y = -vy;  
       break;
     case 3:
       new_vel.x = VEL;

@@ -14,14 +14,15 @@ uint64_t get_now_ms() {
 
 int main ()
 {
-  Audio::Sample *asample;
-  asample = new Audio::Sample();
-  asample->load("audio/assets/blip.dat");
+  Audio::Sample *asample, *asample2, *asample3;
+  asample = new Audio::Sample(), asample2 = new Audio::Sample(),  asample3 = new Audio::Sample();
+  asample->load("audio/assets/blip.dat"), asample2->load("audio/assets/pao.dat");
+  asample3->load("audio/assets/naovaidar.dat");
 
-  Audio::Player *player;
-  player = new Audio::Player();
-  player->init();
-  player->play(asample);
+  Audio::Player *player, *player2, *player3;
+  player = new Audio::Player(), player2 = new Audio::Player(), player3 = new Audio::Player();
+  player->init(44100), player2->init(38100), player3->init(44100);
+  player->play(asample), player2->play(asample2);
 
   pos_2d p = {40,40};
   vel_2d v = {(float)VEL,0};
@@ -56,11 +57,14 @@ int main ()
     t1 = get_now_ms();
     deltaT = t1-t0;
 
-    if (f->food_pos.x == -1 && f->food_pos.y == -1)
+    if (f->food_pos.x == -1 && f->food_pos.y == -1){
       f->feed_snake();
+      asample2->set_position(0);
+    }
 
     // Atualiza modelo
     if(f->update(deltaT) && deltaT!=0) {
+      player3->play(asample3);
       clear();
       move((int)LINES/2, (int)COLS/2);
       printw("GAME OVER");

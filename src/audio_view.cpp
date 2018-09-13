@@ -49,7 +49,7 @@ int mix_and_play (const void *inputBuffer, void *outputBuffer,
         buffer[i] = data[pos];
       else
         buffer[i] = 0;
-      pos+=2;
+      pos+=1;
     }
     s->set_position(pos);
   }
@@ -60,7 +60,7 @@ void Player::play(Sample *audiosample) {
   this->audio_sample = audiosample;
 }
 
-void Player::init() {
+void Player::init(double sample_rate) {
   PaError err;
 
   err = Pa_Initialize();
@@ -82,7 +82,7 @@ void Player::init() {
   err = Pa_OpenStream( &stream,
                          NULL,      /* No input. */
                          &outputParameters,
-                         44100,
+                         sample_rate,
                          64,       /* Frames per buffer. */
                          paClipOff, /* We won't output out of range samples so don't bother clipping them. */
                          mix_and_play,

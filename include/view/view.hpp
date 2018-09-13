@@ -61,7 +61,7 @@ class Player {
     Player();
     ~Player();
 
-    void init();
+    void init(double sample_rate);
     void pause();
     void stop();
     void play(Sample *audiosample);
