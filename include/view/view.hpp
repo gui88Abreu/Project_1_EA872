@@ -15,11 +15,12 @@ RA: 173691
 class Tela {
   private:
     ListaDeSnakes *lista;
+    pos_2d *food_pos;
     int maxI, maxJ;
     float maxX, maxY;
 
   public:
-    Tela(ListaDeSnakes *lds, int maxI, int maxJ, float maxX, float maxY);
+    Tela(ListaDeSnakes *lds, pos_2d *food_pos, int maxI, int maxJ, float maxX, float maxY);
     ~Tela();
     void stop();
     void init();

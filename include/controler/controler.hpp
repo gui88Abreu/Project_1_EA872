@@ -9,16 +9,17 @@ RA: 173691
 #include <iostream>
 #include <vector>
 #include <cstdlib>
+#include <time.h>
 
 #include "../model/model.hpp"
 
-const float VEL = 8.0;
+#define VEL 10
 
 class Fisica {
   private:
     ListaDeSnakes *lista;
     bool verify_selfkill(std::vector<Corpo*> *corpos);
-    void feed_snake();
+    bool verify_snake_ate(std::vector<Corpo*> *c);
 
   public:
     Fisica(ListaDeSnakes *lds);
@@ -26,6 +27,7 @@ class Fisica {
     void add_corpo(Corpo *c);
     bool update(float deltaT);
     pos_2d food_pos;
+    void feed_snake();
 };
 
 #endif

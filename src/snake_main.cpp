@@ -24,7 +24,7 @@ int main ()
   player->play(asample);
 
   pos_2d p = {40,40};
-  vel_2d v = {(float)2*VEL,0};
+  vel_2d v = {(float)VEL,0};
 
   Snake *snake = new Snake();
   for (int i =0; i < 8; i++){
@@ -37,7 +37,7 @@ int main ()
   l->add_snake(snake);
   Fisica *f = new Fisica(l);
 
-  Tela *tela = new Tela(l, 20, 20, 20, 20);
+  Tela *tela = new Tela(l, &f->food_pos, 20, 20, 20, 20);
   tela->init();
 
   Teclado *teclado = new Teclado();
@@ -55,6 +55,9 @@ int main ()
     t0 = t1;
     t1 = get_now_ms();
     deltaT = t1-t0;
+
+    if (f->food_pos.x == -1 && f->food_pos.y == -1)
+      f->feed_snake();
 
     // Atualiza modelo
     if(f->update(deltaT) && deltaT!=0) {

@@ -9,10 +9,14 @@ RA: 173691
 
 Fisica::Fisica(ListaDeSnakes *lds) {
   this->lista = lds;
+
+  // indicate that there is no food yet
   this->food_pos.x =-1.0; food_pos.y = -1.0;
 }
 
 void Fisica::feed_snake(){
+  srand(time(NULL));
+  
   int y = rand()%LINES;
   int x = rand()%COLS;
   int j = 0 ;
@@ -23,13 +27,14 @@ void Fisica::feed_snake(){
     std::vector<Corpo*> *corpos = (*s)[j]->get_corpos();
     j++;
 
-    vel_2d vel = (*corpos)[0]->get_velocidade();
     std::vector<pos_2d> last_pos(corpos->size());
 
+    // get last positions
     for (int i = 0; i < corpos->size(); i++) {
       last_pos[i]= (*corpos)[i]->get_posicao();
     }
 
+    // verify if already exist some body in the position x,y
     for (int i = 0; i < corpos->size(); i++){
       if ((int)last_pos[i].x == x && (int)last_pos[i].y == y){
         try_again = 1;
@@ -39,8 +44,8 @@ void Fisica::feed_snake(){
 
     if (try_again){
       try_again = 0;
-      x = rand()%LINES;
-      y = rand()%COLS;
+      x = rand()%COLS;
+      y = rand()%LINES;
       j = 0;
     }
   }
@@ -61,13 +66,16 @@ bool Fisica::update(float deltaT) {
     std::vector<pos_2d> last_pos(c->size());
     pos_2d new_pos;
 
+    // get last positions
     for (int i = 0; i < c->size(); i++) {
       last_pos[i]= (*c)[i]->get_posicao();
     }
     
+    // compute new position of the head
     new_pos.x = last_pos[0].x + deltaT *vel.x;
     new_pos.y = last_pos[0].y + deltaT *vel.y;
 
+    // borders coditions
     if (new_pos.x < 0) {
       new_pos.x  = COLS-1;
     }
@@ -81,20 +89,57 @@ bool Fisica::update(float deltaT) {
       new_pos.y  = 0;
     }
 
+    // update snake position
     for (int i = 1; i < c->size(); i++) {
       (*c)[i]->update(vel, last_pos[i-1]);
     }
     (*c)[0]->update(vel, new_pos);
+    
+    // verify if snake got hited by itself
     selfkill = this->verify_selfkill(c);
-
-    if ((int)(*c)[c->size()-1]->get_posicao().x == (int)this->food_pos.x \
-        && (int)(*c)[c->size()-1]->get_posicao().y == (int)this->food_pos.y){
+    
+    // increase snake size or not
+    if (this->verify_snake_ate(c)){
       this->food_pos.x = -1, this->food_pos.y =-1;
       Corpo *new_corpo = new Corpo(vel, last_pos[c->size()-1]);
       (*s)[j]->add_corpo(new_corpo);
     }
   }
   return selfkill;
+}
+
+bool Fisica::verify_snake_ate(std::vector<Corpo*> *c){
+  bool ate;
+
+  if ((int)(*c)[c->size()-1]->get_posicao().x == (int)this->food_pos.x \
+        && (int)(*c)[c->size()-1]->get_posicao().y == (int)this->food_pos.y){
+      ate = true;
+  }
+  else if((int)(*c)[c->size()-2]->get_posicao().x > (int)this->food_pos.x \
+        && (int)(*c)[c->size()-1]->get_posicao().x < (int)this->food_pos.x\
+        && (int)(*c)[c->size()-1]->get_posicao().y == this->food_pos.y){
+      ate = true;
+  }
+  else if((int)(*c)[c->size()-2]->get_posicao().x < (int)this->food_pos.x \
+        && (int)(*c)[c->size()-1]->get_posicao().x > (int)this->food_pos.x\
+        && (int)(*c)[c->size()-1]->get_posicao().y == this->food_pos.y){
+      ate = true;
+  }
+  else if((int)(*c)[c->size()-2]->get_posicao().y < (int)this->food_pos.y \
+        && (int)(*c)[c->size()-1]->get_posicao().y > (int)this->food_pos.y\
+        && (int)(*c)[c->size()-1]->get_posicao().x == this->food_pos.x){
+      ate = true;
+  }
+  else if((int)(*c)[c->size()-2]->get_posicao().y > (int)this->food_pos.y \
+        && (int)(*c)[c->size()-1]->get_posicao().y < (int)this->food_pos.y\
+        && (int)(*c)[c->size()-1]->get_posicao().x == this->food_pos.x){
+      ate = true;
+  }
+  else{
+    ate = false;
+  }
+
+  return ate;
 }
 
 bool Fisica::verify_selfkill(std::vector<Corpo*> *corpos){
@@ -118,7 +163,7 @@ void Fisica::change_dir(int direction, int i) {
       new_vel.y = VEL;
       break;
     case 1:
-      new_vel.x = -2.0*VEL;
+      new_vel.x = -VEL;
       new_vel.y = 0;
       break;
     case 2:
@@ -126,7 +171,7 @@ void Fisica::change_dir(int direction, int i) {
       new_vel.y = -VEL;  
       break;
     case 3:
-      new_vel.x = 2.0*VEL;
+      new_vel.x = VEL;
       new_vel.y = 0;
       break;
     default:
@@ -137,6 +182,7 @@ void Fisica::change_dir(int direction, int i) {
   std::vector<Corpo *> *c = (*s)[i]->get_corpos();
   last_vel = (*c)[0]->get_velocidade();
 
+  // do not turn around
   if ((new_vel.x < 0 && last_vel.x > 0) || (new_vel.x > 0 && last_vel.x < 0))
     return;
   else if ((new_vel.y < 0 && last_vel.y > 0) || (new_vel.y > 0 && last_vel.y < 0))
