@@ -71,7 +71,6 @@ bool Fisica::update(float deltaT) {
     }
     
     // compute new position of the head
-    //deltaT = deltaT/1000.0;
     new_pos.x = last_pos[0].x + deltaT *vel.x;
     new_pos.y = last_pos[0].y + deltaT *vel.y;
 
@@ -111,8 +110,8 @@ bool Fisica::update(float deltaT) {
 bool Fisica::verify_snake_ate(std::vector<Corpo*> *c){
   bool ate;
 
-  if ((int)(*c)[c->size()-1]->get_posicao().x == (int)this->food_pos.x \
-        && (int)(*c)[c->size()-1]->get_posicao().y == (int)this->food_pos.y){
+  if ((int)(*c)[0]->get_posicao().x == (int)this->food_pos.x \
+        && (int)(*c)[0]->get_posicao().y == (int)this->food_pos.y){
       ate = true;
   }/*
   else if((int)(*c)[c->size()-2]->get_posicao().x > (int)this->food_pos.x \

@@ -12,10 +12,10 @@ RA: 173691
 #include "../model/snake_model.hpp"
 
 #define SNAKE_SHAPE '0'
-#define FOOD_SHAPE '*'
+#define FOOD_SHAPE '0'
 
-#define SNAKE_PAIR 0
-#define FOOD_PAIR 1
+#define SNAKE_PAIR 1
+#define FOOD_PAIR 2
 
 class Tela {
   private:

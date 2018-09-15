@@ -17,8 +17,8 @@ void Tela::init() {
   keypad(stdscr, TRUE);
 
   start_color();
-  init_pair(SNAKE_PAIR, COLOR_YELLOW, COLOR_RED);
-  init_pair(FOOD_PAIR, COLOR_YELLOW, COLOR_RED);
+  init_pair(SNAKE_PAIR, COLOR_GREEN, COLOR_BLACK);
+  init_pair(FOOD_PAIR, COLOR_RED, COLOR_BLACK);
 }
 
 void Tela::update() {
@@ -28,12 +28,13 @@ void Tela::update() {
   //apaga corpos na tela
   clear();
 
-  attron(COLOR_PAIR(SNAKE_PAIR));
+  
   for (int k =0; k < s->size(); k++){
     int i, j;
     std::vector<Corpo *> *corpos = (*s)[k]->get_corpos();
 
     // Desenha corpos na tela
+    attron(COLOR_PAIR(SNAKE_PAIR));
     for (int z = 0; z < corpos->size(); z++)
     {
       pos_2d p = (*corpos)[z]->get_posicao();
@@ -41,8 +42,8 @@ void Tela::update() {
       j = (int)p.x * (this->maxI / this->maxX);
       mvaddch(i, j, SNAKE_SHAPE);
     }
+    attroff(COLOR_PAIR(SNAKE_PAIR));
   }
-  attroff(COLOR_PAIR(SNAKE_PAIR));
 
   if (this->food_pos->x != -1){
     attron(COLOR_PAIR(FOOD_PAIR));

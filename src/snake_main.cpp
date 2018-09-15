@@ -45,21 +45,10 @@ int main ()
   Teclado *teclado = new Teclado();
   teclado->init();
 
-  uint64_t t0;
-  uint64_t t1;
-  uint64_t deltaT;
-  uint64_t T;
-
-  T = get_now_ms();
-  t1 = T;
+  int deltaT =1;
   int food_counter = 0, background_song = 0;
   while (1) {
-    // Atualiza timers
-    t0 = t1;
-    t1 = get_now_ms();
-    deltaT = 1;//t1-t0;
-
-    if (f->food_pos.x == -1 && f->food_pos.y == -1){
+    if (f->food_pos.x == -1){
       food_counter++;
       f->feed_snake();
       
@@ -69,7 +58,7 @@ int main ()
       else if (food_counter == 20){
         soundboard_player->play(asamples[12]);
       }
-      else{
+      else if (food_counter > 1){
         soundboard_player->play(asamples[4]);
         asamples[4]->set_position(0);
       }
