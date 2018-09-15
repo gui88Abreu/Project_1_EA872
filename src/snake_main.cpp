@@ -20,17 +20,17 @@ Snake *create_snake();
 
 int main ()
 {
-  std::vector<Audio::Sample* > asamples(14);
+  std::vector<Audio::Sample* > asamples(16);
   init_asamples(&asamples);
 
   Audio::Player *button_player, *soundboard_player, *background_player;
   button_player = new Audio::Player(), soundboard_player = new Audio::Player(), background_player = new Audio::Player();
   button_player->init(44100, 64, 0.6), soundboard_player->init(44100, 256, 2.5), background_player->init(44100, 2048, 0.2);
 
-  asamples[0]->set_position(1000000);
-  button_player->play(asamples[0]);
+  asamples[3]->set_position(1000000);
+  button_player->play(asamples[3]);
 
-  background_player->play(asamples[3]);
+  background_player->play(asamples[0]);
 
   Snake *snake = create_snake();
   
@@ -51,7 +51,7 @@ int main ()
 
   T = get_now_ms();
   t1 = T;
-  int food_counter = 0;
+  int food_counter = 0, background_song = 0;
   while (1) {
     // Atualiza timers
     t0 = t1;
@@ -63,24 +63,29 @@ int main ()
       f->feed_snake();
       
       if (food_counter == 10){
-      soundboard_player->play(asamples[12]);
+      soundboard_player->play(asamples[14]);
       }
       else if (food_counter == 20){
-        soundboard_player->play(asamples[10]);
+        soundboard_player->play(asamples[12]);
       }
       else{
-        soundboard_player->play(asamples[1]);
-        asamples[1]->set_position(0);
+        soundboard_player->play(asamples[4]);
+        asamples[4]->set_position(0);
       }
     }
 
-    if (asamples[3]->finished())
-      asamples[3]->set_position(0);
+    if (asamples[background_song]->finished()){
+      background_song++;
+      if (background_song > 2)
+        background_song = 0;
+      asamples[background_song]->set_position(0);
+      background_player->play(asamples[background_song]);
+    }
 
     // Atualiza modelo
     if(f->update(deltaT) && deltaT!=0) {
       background_player->stop();
-      soundboard_player->play(asamples[2]);
+      soundboard_player->play(asamples[5]);
       std::this_thread::sleep_for (std::chrono::milliseconds(3000));
       clear();
       move((int)LINES/2, (int)COLS/2);
@@ -100,25 +105,25 @@ int main ()
     switch (c){
       case 's':
         f->change_dir(0,0);
-        asamples[0]->set_position(0);
+        asamples[3]->set_position(0);
         break;
       case 'a':
         f->change_dir(1,0);
-        asamples[0]->set_position(0);
+        asamples[3]->set_position(0);
         break;
       case 'w':
         f->change_dir(2,0);
-        asamples[0]->set_position(0);
+        asamples[3]->set_position(0);
         break;
       case 'd':
         f->change_dir(3,0);
-        asamples[0]->set_position(0);
+        asamples[3]->set_position(0);
         break;
     }
     
     if (c==27){
       background_player->stop();
-      soundboard_player->play(asamples[4]);
+      soundboard_player->play(asamples[6]);
       clear();
       move((int)LINES/2, (int)COLS/2);
       printw("BYE BYE");
@@ -163,19 +168,21 @@ void init_asamples(std::vector<Audio::Sample*> *asamples){
     (*asamples)[i] = new Audio::Sample();
   }
 
-  (*asamples)[0]->load("audio/assets/blip.dat");
-  (*asamples)[1]->load("audio/assets/pao.dat");
-  (*asamples)[2]->load("audio/assets/naovaidar.dat");
-  (*asamples)[3]->load("audio/assets/background.dat");
-  (*asamples)[4]->load("audio/assets/get_over_here.dat");
-  (*asamples)[5]->load("audio/assets/come_here.dat");
-  (*asamples)[6]->load("audio/assets/mortal_kombat_theme.dat");
-  (*asamples)[7]->load("audio/assets/finish_him.dat");
-  (*asamples)[8]->load("audio/assets/finish_her.dat");
-  (*asamples)[9]->load("audio/assets/fatality.dat");
-  (*asamples)[10]->load("audio/assets/animality.dat");
-  (*asamples)[11]->load("audio/assets/soul_suffer.dat");
-  (*asamples)[12]->load("audio/assets/brutality.dat");
-  (*asamples)[13]->load("audio/assets/zeruela.dat");
+  (*asamples)[0]->load("audio/assets/background0.dat");
+  (*asamples)[1]->load("audio/assets/background1.dat");
+  (*asamples)[2]->load("audio/assets/background2.dat");
+  (*asamples)[3]->load("audio/assets/blip.dat");
+  (*asamples)[4]->load("audio/assets/pao.dat");
+  (*asamples)[5]->load("audio/assets/naovaidar.dat");
+  (*asamples)[6]->load("audio/assets/get_over_here.dat");
+  (*asamples)[7]->load("audio/assets/come_here.dat");
+  (*asamples)[8]->load("audio/assets/mortal_kombat_theme.dat");
+  (*asamples)[9]->load("audio/assets/finish_him.dat");
+  (*asamples)[10]->load("audio/assets/finish_her.dat");
+  (*asamples)[11]->load("audio/assets/fatality.dat");
+  (*asamples)[12]->load("audio/assets/animality.dat");
+  (*asamples)[13]->load("audio/assets/soul_suffer.dat");
+  (*asamples)[14]->load("audio/assets/brutality.dat");
+  (*asamples)[15]->load("audio/assets/zeruela.dat");
   return;
 }
