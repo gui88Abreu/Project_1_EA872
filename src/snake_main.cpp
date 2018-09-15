@@ -15,7 +15,7 @@ Snake *create_snake();
 
 int main ()
 {
-  std::vector<Audio::Sample* > asamples(13);
+  std::vector<Audio::Sample* > asamples(14);
   init_asamples(&asamples);
 
   Audio::Player *button_player, *soundboard_player, *background_player;
@@ -46,6 +46,7 @@ int main ()
 
   T = get_now_ms();
   t1 = T;
+  int food_counter = 0;
   while (1) {
     // Atualiza timers
     t0 = t1;
@@ -53,9 +54,19 @@ int main ()
     deltaT = 1;//t1-t0;
 
     if (f->food_pos.x == -1 && f->food_pos.y == -1){
+      food_counter++;
       f->feed_snake();
-      soundboard_player->play(asamples[1]);
-      asamples[1]->set_position(0);
+      
+      if (food_counter == 10){
+      soundboard_player->play(asamples[12]);
+      }
+      else if (food_counter == 20){
+        soundboard_player->play(asamples[10]);
+      }
+      else{
+        soundboard_player->play(asamples[1]);
+        asamples[1]->set_position(0);
+      }
     }
 
     if (asamples[3]->finished())
@@ -102,13 +113,14 @@ int main ()
     
     if (c==27){
       background_player->stop();
+      soundboard_player->play(asamples[4]);
       clear();
       move((int)LINES/2, (int)COLS/2);
       printw("BYE BYE");
       move((int)LINES/2 + 1, (int)COLS/2);
       printw("COME BACK SOON");
       refresh();
-      std::this_thread::sleep_for (std::chrono::milliseconds(2000));
+      std::this_thread::sleep_for (std::chrono::milliseconds(3000));
       break;
     }
 
@@ -158,6 +170,7 @@ void init_asamples(std::vector<Audio::Sample*> *asamples){
   (*asamples)[9]->load("audio/assets/fatality.dat");
   (*asamples)[10]->load("audio/assets/animality.dat");
   (*asamples)[11]->load("audio/assets/soul_suffer.dat");
-  (*asamples)[12]->load("audio/assets/zeruela.dat");
+  (*asamples)[12]->load("audio/assets/brutality.dat");
+  (*asamples)[13]->load("audio/assets/zeruela.dat");
   return;
 }
