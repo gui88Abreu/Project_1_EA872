@@ -1,8 +1,8 @@
 #include "../include/controler/keyboard_controler.hpp"
 
-void threadfun (char *keybuffer, int *control)
+void threadfun (int *keybuffer, int *control)
 {
-  char c;
+  int c;
   while ((*control) == 1) {
     c = getch();
     if (c!=ERR) (*keybuffer) = c;
@@ -35,8 +35,8 @@ void Teclado::stop() {
   (this->kb_thread).join();
 }
 
-char Teclado::getchar() {
-  char c = this->ultima_captura;
+int Teclado::getchar() {
+  int c = this->ultima_captura;
   this->ultima_captura = 0;
   return c;
 }

@@ -2,6 +2,7 @@
 #include <chrono>
 #include <thread>
 #include <vector>
+#include <ncurses.h>
 
 #include "../include/model/snake_model.hpp"
 #include "../include/view/snake_view.hpp"
@@ -101,23 +102,36 @@ int main ()
     tela->update();
 
     // Lê o teclado
-    char c = teclado->getchar();
+    int c = teclado->getchar();
     switch (c){
-      case 's':
+      case KEY_DOWN:
         f->change_dir(0,0);
         asamples[3]->set_position(0);
         break;
-      case 'a':
+      case KEY_LEFT:
         f->change_dir(1,0);
         asamples[3]->set_position(0);
         break;
-      case 'w':
+      case KEY_UP:
         f->change_dir(2,0);
         asamples[3]->set_position(0);
         break;
-      case 'd':
+      case KEY_RIGHT:
         f->change_dir(3,0);
         asamples[3]->set_position(0);
+        break;
+      case 'n':
+      case 'N':
+        background_song+=2;
+      case 'p':
+      case 'P':
+        background_song-=1;
+        if (background_song > 2)
+          background_song = 0;
+        else if (background_song < 0)
+          background_song = 2;
+        asamples[background_song]->set_position(0);
+        background_player->play(asamples[background_song]);
         break;
     }
     
@@ -172,7 +186,7 @@ void init_asamples(std::vector<Audio::Sample*> *asamples){
   (*asamples)[1]->load("audio/assets/background1.dat");
   (*asamples)[2]->load("audio/assets/background2.dat");
   (*asamples)[3]->load("audio/assets/blip.dat");
-  (*asamples)[4]->load("audio/assets/pao.dat");
+  (*asamples)[4]->load("audio/assets/bite.dat");
   (*asamples)[5]->load("audio/assets/naovaidar.dat");
   (*asamples)[6]->load("audio/assets/get_over_here.dat");
   (*asamples)[7]->load("audio/assets/come_here.dat");

@@ -11,6 +11,12 @@ RA: 173691
 
 #include "../model/snake_model.hpp"
 
+#define SNAKE_SHAPE '0'
+#define FOOD_SHAPE '*'
+
+#define SNAKE_PAIR 0
+#define FOOD_PAIR 1
+
 class Tela {
   private:
     ListaDeSnakes *lista;

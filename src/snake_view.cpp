@@ -14,6 +14,11 @@ void Tela::init() {
   initscr();			       /* Start curses mode 		*/
 	raw();				         /* Line buffering disabled	*/
   curs_set(0);           /* Do not display cursor */
+  keypad(stdscr, TRUE);
+
+  start_color();
+  init_pair(SNAKE_PAIR, COLOR_YELLOW, COLOR_RED);
+  init_pair(FOOD_PAIR, COLOR_YELLOW, COLOR_RED);
 }
 
 void Tela::update() {
@@ -23,6 +28,7 @@ void Tela::update() {
   //apaga corpos na tela
   clear();
 
+  attron(COLOR_PAIR(SNAKE_PAIR));
   for (int k =0; k < s->size(); k++){
     int i, j;
     std::vector<Corpo *> *corpos = (*s)[k]->get_corpos();
@@ -33,14 +39,15 @@ void Tela::update() {
       pos_2d p = (*corpos)[z]->get_posicao();
       i = (int)p.y * (this->maxI / this->maxX);
       j = (int)p.x * (this->maxI / this->maxX);
-      move(i,j);   /* Move cursor to position */
-      echochar('*');  /* Prints character, advances a position */
+      mvaddch(i, j, SNAKE_SHAPE);
     }
   }
+  attroff(COLOR_PAIR(SNAKE_PAIR));
 
   if (this->food_pos->x != -1){
-    move(this->food_pos->y, this->food_pos->x);   /* Move cursor to position */
-    echochar('*');  /* Prints character, advances a position */
+    attron(COLOR_PAIR(FOOD_PAIR));
+    mvaddch(this->food_pos->y, this->food_pos->x, FOOD_SHAPE);
+    attroff(COLOR_PAIR(FOOD_PAIR));
   }
   
   // Atualiza tela
