@@ -2,11 +2,8 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include <random>
 
-#include "../include/model/model.hpp"
-#include "../include/view/view.hpp"
-#include "../include/controler/controler.hpp"
+#include "../include/view/audio_view.hpp"
 
 using namespace Audio;
 

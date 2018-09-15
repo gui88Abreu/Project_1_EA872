@@ -3,8 +3,8 @@ Nome: Guilherme de Brito Abreu
 RA: 173691
 */
 
-#include "../include/model/model.hpp"
-#include "../include/controler/controler.hpp"
+#include "../include/model/snake_model.hpp"
+#include "../include/controler/snake_controler.hpp"
 #include <ncurses.h>
 
 Fisica::Fisica(ListaDeSnakes *lds) {

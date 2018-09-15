@@ -1,10 +1,5 @@
-/*
-Nome: Guilherme de Brito Abreu
-RA: 173691
-*/
-
-#ifndef _MODEL_HPP
-#define _MODEL_HPP
+#ifndef _SNAKE_MODEL_HPP
+#define _SNAKE_MODEL_HPP
 
 #include <iostream>
 #include <vector>
@@ -51,23 +46,4 @@ class ListaDeSnakes {
     std::vector<Snake*> *get_snakes();
 };
 
-namespace Audio{
-
-class Sample {
-  private:
-    std::vector<float> data;
-    unsigned int position;
-
-  public:
-    Sample();
-    ~Sample();
-    void load(const char *filename);
-    std::vector<float> get_data();
-    unsigned int get_position();
-    void set_position(unsigned int pos);
-    bool finished();
-
-};
-
-}
 #endif

@@ -11,7 +11,7 @@ RA: 173691
 #include <cstdlib>
 #include <time.h>
 
-#include "../model/model.hpp"
+#include "../model/snake_model.hpp"
 
 #define VEL 1
 
