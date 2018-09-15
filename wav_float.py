@@ -9,6 +9,10 @@ def wav_to_floats(filename):
 if len(sys.argv) < 3:
   quit("Missing arguments\n")
 
+mul_factor = 1
+if len(sys.argv) == 4:
+  mul_factor = float(sys.argv[3])
+
 signal = wav_to_floats(sys.argv[1])
 print ("read "+str(len(signal))+" frames")
 print  ("in the range "+str(min(signal))+" to "+str(min(signal)))
@@ -16,6 +20,6 @@ print  ("in the range "+str(min(signal))+" to "+str(min(signal)))
 float_audio = open(sys.argv[2], 'w')
 
 for amplitude in signal:
-  float_audio.write(str(amplitude)+'\n')
+  float_audio.write(str(amplitude*mul_factor)+'\n')
 
 float_audio.close()

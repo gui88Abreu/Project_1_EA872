@@ -46,7 +46,7 @@ int mix_and_play (const void *inputBuffer, void *outputBuffer,
     // Fill the buffer with samples!
     for (int i=0; (i<framesPerBuffer); i++) {
       if (pos < data.size())
-        buffer[i] = data[pos];
+        buffer[i] = data[pos]*player->volume;
       else
         buffer[i] = 0;
       pos+=1;
@@ -60,7 +60,7 @@ void Player::play(Sample *audiosample) {
   this->audio_sample = audiosample;
 }
 
-void Player::init(double sample_rate) {
+void Player::init(double sample_rate, unsigned int frames, float volume) {
   PaError err;
 
   err = Pa_Initialize();
@@ -75,6 +75,8 @@ void Player::init(double sample_rate) {
     return;
   }
 
+  this->volume = volume;
+
   outputParameters.channelCount = 1;                     /* Mono output. */
   outputParameters.sampleFormat = paFloat32;
   outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
@@ -83,7 +85,7 @@ void Player::init(double sample_rate) {
                          NULL,      /* No input. */
                          &outputParameters,
                          sample_rate,
-                         64,       /* Frames per buffer. */
+                         frames,       /* Frames per buffer. */
                          paClipOff, /* We won't output out of range samples so don't bother clipping them. */
                          mix_and_play,
                          this );

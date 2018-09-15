@@ -13,7 +13,7 @@ RA: 173691
 
 #include "../model/model.hpp"
 
-#define VEL 10
+#define VEL 1
 
 class Fisica {
   private:

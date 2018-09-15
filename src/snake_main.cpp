@@ -14,15 +14,22 @@ uint64_t get_now_ms() {
 
 int main ()
 {
-  Audio::Sample *asample, *asample2, *asample3;
+  Audio::Sample *asample, *asample2, *asample3, *background_asample;
   asample = new Audio::Sample(), asample2 = new Audio::Sample(),  asample3 = new Audio::Sample();
+  background_asample = new Audio::Sample();
   asample->load("audio/assets/blip.dat"), asample2->load("audio/assets/pao.dat");
-  asample3->load("audio/assets/naovaidar.dat");
+  asample3->load("audio/assets/naovaidar.dat"), background_asample->load("audio/assets/background.dat");
 
-  Audio::Player *player, *player2, *player3;
+  Audio::Player *player, *player2, *player3, *background_player;
   player = new Audio::Player(), player2 = new Audio::Player(), player3 = new Audio::Player();
-  player->init(44100), player2->init(38100), player3->init(44100);
-  player->play(asample), player2->play(asample2);
+  background_player = new Audio::Player();
+  player->init(44100, 64, 0.6), player2->init(38100, 256, 1.5), player3->init(44100, 256, 2.5), background_player->init(44100, 2048, 0.2);
+  player->play(asample), player2->play(asample2), background_player->play(background_asample);
+
+  /*
+  std::thread asmpl_thread;
+  std::thread newthread(player_thread, background_asample);
+  asmpl_thread.swap(newthread);*/
 
   pos_2d p = {40,40};
   vel_2d v = {(float)VEL,0};
@@ -31,7 +38,7 @@ int main ()
   for (int i =0; i < 8; i++){
     Corpo *c = new Corpo(v, p);
     snake->add_corpo(c);
-    p.x-=2;
+    p.x-=1;
   }
 
   ListaDeSnakes *l = new ListaDeSnakes();
@@ -55,21 +62,27 @@ int main ()
     // Atualiza timers
     t0 = t1;
     t1 = get_now_ms();
-    deltaT = t1-t0;
+    deltaT = 1;//t1-t0;
 
     if (f->food_pos.x == -1 && f->food_pos.y == -1){
       f->feed_snake();
       asample2->set_position(0);
     }
 
+    if (background_asample->finished())
+      background_asample->set_position(0);
+      
     // Atualiza modelo
     if(f->update(deltaT) && deltaT!=0) {
+      background_player->stop();
       player3->play(asample3);
+      std::this_thread::sleep_for (std::chrono::milliseconds(3000));
       clear();
       move((int)LINES/2, (int)COLS/2);
       printw("GAME OVER");
       move((int)LINES/2 + 1, (int)COLS/2);
       printw("PRESS SOMETHING TO EXIT");
+      refresh();
       getch();
       break;
     }
@@ -98,11 +111,24 @@ int main ()
         break;
     }
     
-    if (c==27)
+    if (c==27){
+      background_player->stop();
+      clear();
+      move((int)LINES/2, (int)COLS/2);
+      printw("BYE BYE");
+      move((int)LINES/2 + 1, (int)COLS/2);
+      printw("COME BACK SOON");
+      refresh();
+      std::this_thread::sleep_for (std::chrono::milliseconds(2000));
       break;
+    }
 
     std::this_thread::sleep_for (std::chrono::milliseconds(100));
   }
+
+  //asmpl_thread.join();
+  player3->stop();
+  player2->stop();
   player->stop();
   tela->stop();
   teclado->stop();

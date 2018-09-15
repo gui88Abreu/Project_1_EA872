@@ -60,8 +60,8 @@ class Player {
   public:
     Player();
     ~Player();
-
-    void init(double sample_rate);
+    float volume;
+    void init(double sample_rate, unsigned int frames, float volume);
     void pause();
     void stop();
     void play(Sample *audiosample);
