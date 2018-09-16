@@ -109,6 +109,10 @@ int main ()
         f->change_dir(3,0);
         asamples[3]->set_position(0);
         break;
+      case 'm':
+      case 'M':
+        background_player->volume = 0;
+        break;
       case 'n':
       case 'N':
         background_song+=2;
