@@ -45,6 +45,7 @@ int main ()
   Teclado *teclado = new Teclado();
   teclado->init();
 
+  int impulse = 0;
   int deltaT =1;
   int food_counter = 0, background_song = 0;
   while (1) {
@@ -109,9 +110,29 @@ int main ()
         f->change_dir(3,0);
         asamples[3]->set_position(0);
         break;
+      case '\n':
+        impulse = 50;
+        soundboard_player->play(asamples[15]);
+        if (asamples[15]->finished()){
+          asamples[15]->set_position(0);
+        }
+        break;
+      case 'd':
+      case 'D':
+        if (background_player->volume < 0.1)
+          background_player->volume = 0;
+        else background_player->volume -= 0.1;
+        break;
+        break;
+      case 'i':
+      case 'I':
+        background_player->volume += 0.1;
+        if (background_player->volume > 3)
+          background_player->volume = 3;
+        break;
       case 'm':
       case 'M':
-        background_player->volume = 0;
+        background_player->volume = !background_player->volume;
         break;
       case 'n':
       case 'N':
@@ -141,7 +162,8 @@ int main ()
       break;
     }
 
-    std::this_thread::sleep_for (std::chrono::milliseconds(100));
+    std::this_thread::sleep_for (std::chrono::milliseconds(100 - impulse));
+    impulse = 0;
   }
 
   //asmpl_thread.join();
@@ -190,6 +212,6 @@ void init_asamples(std::vector<Audio::Sample*> *asamples){
   (*asamples)[12]->load("audio/assets/animality.dat");
   (*asamples)[13]->load("audio/assets/soul_suffer.dat");
   (*asamples)[14]->load("audio/assets/brutality.dat");
-  (*asamples)[15]->load("audio/assets/zeruela.dat");
+  (*asamples)[15]->load("audio/assets/mario_star.dat");
   return;
 }
