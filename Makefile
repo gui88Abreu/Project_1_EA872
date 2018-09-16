@@ -1,6 +1,8 @@
 # Macros para compilacao
 CC = g++
 CFLAGS = -std=c++11 -lncurses -lpthread -lportaudio
+ASSETS_ZIP = audio/assets/assets.zip
+ASSETS_DIR = audio/assets
 DIR = src
 TARGET = snake\ single\ player
 SRCS := $(shell find $(DIR) -name '*.cpp')
@@ -16,9 +18,13 @@ $(TARGET):$(OBJS)
 %.o:%.cpp
 	$(CC) $(SRCS) $(CFLAGS) -c $< -o $@
 
-run:all
+run:all extract
 	./$(TARGET)
+
+extract:
+	unzip $(ASSETS_ZIP) -d $(ASSETS_DIR)/
 
 clean:
 	$(RM) ./$(TARGET)
 	$(RM) $(DIR)/*.o
+	$(RM) $(ASSETS_DIR)/*.dat
