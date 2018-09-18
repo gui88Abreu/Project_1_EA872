@@ -24,14 +24,12 @@ int main ()
   std::vector<Audio::Sample* > asamples(16);
   init_asamples(&asamples);
 
-  Audio::Player *button_player, *soundboard_player, *background_player;
-  button_player = new Audio::Player(), soundboard_player = new Audio::Player(), background_player = new Audio::Player();
-  button_player->init(44100, 64, 0.6), soundboard_player->init(44100, 256, 2.5), background_player->init(44100, 2048, 0.2);
+  Audio::Player *button_player, *soundboard_player;
+  button_player = new Audio::Player(), soundboard_player = new Audio::Player();
+  button_player->init(44100, 64, 0.6), soundboard_player->init(44100, 256, 2.5);
 
   asamples[3]->set_position(1000000);
   button_player->play(asamples[3]);
-
-  background_player->play(asamples[0]);
 
   Snake *snake = create_snake();
   
@@ -47,7 +45,7 @@ int main ()
 
   int impulse = 0;
   int deltaT =1;
-  int food_counter = 0, background_song = 0;
+  int food_counter = 0;
   while (1) {
     if (f->food_pos.x == -1){
       food_counter++;
@@ -59,29 +57,26 @@ int main ()
       else if (food_counter == 20){
         soundboard_player->play(asamples[12]);
       }
+      else if (food_counter == 40){
+        soundboard_player->play(asamples[11]);
+      }
       else if (food_counter > 1){
         soundboard_player->play(asamples[4]);
         asamples[4]->set_position(0);
       }
-    }
-
-    if (asamples[background_song]->finished()){
-      background_song++;
-      if (background_song > 2)
-        background_song = 0;
-      asamples[background_song]->set_position(0);
-      background_player->play(asamples[background_song]);
+      /*else if (food_counter == 1){
+        soundboard_player->play(asamples[8]);
+      }*/
     }
 
     // Atualiza modelo
     if(f->update(deltaT) && deltaT!=0) {
-      background_player->stop();
       soundboard_player->play(asamples[5]);
       std::this_thread::sleep_for (std::chrono::milliseconds(3000));
       clear();
-      move((int)LINES/2, (int)COLS/2);
+      move((int)LINES/2, -10 + (int)COLS/2);
       printw("GAME OVER");
-      move((int)LINES/2 + 1, (int)COLS/2);
+      move((int)LINES/2 + 1, -10 +(int)COLS/2);
       printw("PRESS SOMETHING TO EXIT");
       refresh();
       getch();
@@ -117,40 +112,14 @@ int main ()
           asamples[15]->set_position(0);
         }
         break;
-      case 'd':
-      case 'D':
-        if (background_player->volume < 0.1)
-          background_player->volume = 0;
-        else background_player->volume -= 0.1;
-        break;
-        break;
-      case 'i':
-      case 'I':
-        background_player->volume += 0.1;
-        if (background_player->volume > 3)
-          background_player->volume = 3;
-        break;
       case 'm':
       case 'M':
-        background_player->volume = !background_player->volume;
-        break;
-      case 'n':
-      case 'N':
-        background_song+=2;
-      case 'p':
-      case 'P':
-        background_song-=1;
-        if (background_song > 2)
-          background_song = 0;
-        else if (background_song < 0)
-          background_song = 2;
-        asamples[background_song]->set_position(0);
-        background_player->play(asamples[background_song]);
+        soundboard_player->volume = !soundboard_player->volume;
+        button_player->volume = !button_player->volume;
         break;
     }
     
     if (c==27){
-      background_player->stop();
       soundboard_player->play(asamples[6]);
       clear();
       move((int)LINES/2, (int)COLS/2);
@@ -197,9 +166,6 @@ void init_asamples(std::vector<Audio::Sample*> *asamples){
     (*asamples)[i] = new Audio::Sample();
   }
 
-  (*asamples)[0]->load("audio/assets/background0.dat");
-  (*asamples)[1]->load("audio/assets/background1.dat");
-  (*asamples)[2]->load("audio/assets/background2.dat");
   (*asamples)[3]->load("audio/assets/blip.dat");
   (*asamples)[4]->load("audio/assets/bite.dat");
   (*asamples)[5]->load("audio/assets/naovaidar.dat");
