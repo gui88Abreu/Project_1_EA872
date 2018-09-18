@@ -55,7 +55,7 @@ void Fisica::feed_snake(){
 }
 
 bool Fisica::update(float deltaT) {
-  // Atualiza parametros dos corpos!
+  // get snake list!
   std::vector<Snake*> *s = this->lista->get_snakes();
   bool selfkill = false;
 
@@ -113,27 +113,7 @@ bool Fisica::verify_snake_ate(std::vector<Corpo*> *c){
   if ((int)(*c)[0]->get_posicao().x == (int)this->food_pos.x \
         && (int)(*c)[0]->get_posicao().y == (int)this->food_pos.y){
       ate = true;
-  }/*
-  else if((int)(*c)[c->size()-2]->get_posicao().x > (int)this->food_pos.x \
-        && (int)(*c)[c->size()-1]->get_posicao().x < (int)this->food_pos.x\
-        && (int)(*c)[c->size()-1]->get_posicao().y == this->food_pos.y){
-      ate = true;
   }
-  else if((int)(*c)[c->size()-2]->get_posicao().x < (int)this->food_pos.x \
-        && (int)(*c)[c->size()-1]->get_posicao().x > (int)this->food_pos.x\
-        && (int)(*c)[c->size()-1]->get_posicao().y == this->food_pos.y){
-      ate = true;
-  }
-  else if((int)(*c)[c->size()-2]->get_posicao().y < (int)this->food_pos.y \
-        && (int)(*c)[c->size()-1]->get_posicao().y > (int)this->food_pos.y\
-        && (int)(*c)[c->size()-1]->get_posicao().x == this->food_pos.x){
-      ate = true;
-  }
-  else if((int)(*c)[c->size()-2]->get_posicao().y > (int)this->food_pos.y \
-        && (int)(*c)[c->size()-1]->get_posicao().y < (int)this->food_pos.y\
-        && (int)(*c)[c->size()-1]->get_posicao().x == this->food_pos.x){
-      ate = true;
-  }*/
   else{
     ate = false;
   }
@@ -152,7 +132,6 @@ bool Fisica::verify_selfkill(std::vector<Corpo*> *corpos){
 }
 
 void Fisica::change_dir(int direction, int i) {
-  // Atualiza parametros dos corpos!
   vel_2d new_vel;
   vel_2d last_vel;
   

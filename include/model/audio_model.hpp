@@ -15,11 +15,11 @@ class Sample {
   public:
     Sample();
     ~Sample();
-    void load(const char *filename);
-    std::vector<float> get_data();
-    unsigned int get_position();
-    void set_position(unsigned int pos);
-    bool finished();
+    void load(const char *filename); // load file
+    std::vector<float> get_data(); // return file datas
+    unsigned int get_position(); // return position of the next data to be echoed
+    void set_position(unsigned int pos); // update position of the next data to be echoed
+    bool finished(); 
 
 };
 

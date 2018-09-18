@@ -8,17 +8,17 @@ void threadfun (int *keybuffer, int *control);
 
 class Teclado {
   private:
-    int ultima_captura;
-    int rodando;
+    int ultima_captura; // last capture
+    int rodando; // running
 
-    std::thread kb_thread;
+    std::thread kb_thread; // keyboard thread
 
   public:
     Teclado();
     ~Teclado();
-    void stop();
-    void init();
-    int getchar();
+    void stop(); // terminate thread that gets keys from keyboard 
+    void init(); // init thread that gets keys from keyboard 
+    int getchar(); // return key read 
 };
 
 #endif

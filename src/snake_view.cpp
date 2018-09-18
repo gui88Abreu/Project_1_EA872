@@ -14,18 +14,18 @@ void Tela::init() {
   initscr();			       /* Start curses mode 		*/
 	raw();				         /* Line buffering disabled	*/
   curs_set(0);           /* Do not display cursor */
-  keypad(stdscr, TRUE);
+  keypad(stdscr, TRUE); /*enable to get not just standards keys*/
 
+  /*init color mode on the screen*/
   start_color();
   init_pair(SNAKE_PAIR, COLOR_GREEN, COLOR_BLACK);
   init_pair(FOOD_PAIR, COLOR_RED, COLOR_BLACK);
 }
 
 void Tela::update() {
-  //std::vector<Snake*> *s_old = this->lista_anterior->get_snakes();
   std::vector<Snake*> *s = this->lista->get_snakes();
 
-  //apaga corpos na tela
+  //remove everything from the screen
   clear();
 
   
@@ -33,7 +33,7 @@ void Tela::update() {
     int i, j;
     std::vector<Corpo *> *corpos = (*s)[k]->get_corpos();
 
-    // Desenha corpos na tela
+    // Draw bodys on the screen
     attron(COLOR_PAIR(SNAKE_PAIR));
     for (int z = 0; z < corpos->size(); z++)
     {
@@ -45,13 +45,14 @@ void Tela::update() {
     attroff(COLOR_PAIR(SNAKE_PAIR));
   }
 
+  // Draw food on the screen
   if (this->food_pos->x != -1){
     attron(COLOR_PAIR(FOOD_PAIR));
     mvaddch(this->food_pos->y, this->food_pos->x, FOOD_SHAPE);
     attroff(COLOR_PAIR(FOOD_PAIR));
   }
   
-  // Atualiza tela
+  // update scren
   refresh();
 }
 

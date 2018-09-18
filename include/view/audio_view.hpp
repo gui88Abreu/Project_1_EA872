@@ -20,11 +20,11 @@ class Player {
   public:
     Player();
     ~Player();
-    float volume;
-    void init(double sample_rate, unsigned int frames, float volume);
-    void pause();
-    void stop();
-    void play(Sample *audiosample);
+    float volume; // control volume
+    void init(double sample_rate, unsigned int frames, float volume); // init player
+    void pause(); // pause player
+    void stop(); // stop player
+    void play(Sample *audiosample); // associate a sample to the player
     Sample *get_data();
 };
 

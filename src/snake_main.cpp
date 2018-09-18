@@ -16,131 +16,176 @@
 using namespace std::chrono;
 
 uint64_t get_now_ms();
-void init_asamples(std::vector<Audio::Sample*> *asamples);
-Snake *create_snake();
+void init_asamples(std::vector<Audio::Sample*> *asamples); // init asamples
+void game_over_msg(); // print game over message
+void exit_msg(); // print exit message
+void soundboard_interaction(int food_counter, std::vector<Audio::Sample*> asamples, Audio::Player *soundboard_player); // define which soundboard to play
+bool keyboard_map(int c, std::vector<Audio::Sample* > asamples, Audio::Player *button_player, // choose what happens according with c
+                  Audio::Player *soundboard_player, Fisica *f, int *impulse);
+Snake *create_snake(); // create snake
 
-int main ()
-{
+int main (){
+
+  // init asamples
   std::vector<Audio::Sample* > asamples(16);
   init_asamples(&asamples);
 
+  // init players
   Audio::Player *button_player, *soundboard_player;
   button_player = new Audio::Player(), soundboard_player = new Audio::Player();
   button_player->init(44100, 64, 0.6), soundboard_player->init(44100, 256, 2.5);
 
-  asamples[3]->set_position(1000000);
+  // ensure that button_player won't play at the beginning of the game
+  asamples[3]->set_position(INT32_MAX);
   button_player->play(asamples[3]);
 
   Snake *snake = create_snake();
   
+  // add snake into snake list and associate a physical model to it
   ListaDeSnakes *l = new ListaDeSnakes();
   l->add_snake(snake);
   Fisica *f = new Fisica(l);
 
+  // begin screen
   Tela *tela = new Tela(l, &f->food_pos, 20, 20, 20, 20);
   tela->init();
 
+  // begin keyboard interface
   Teclado *teclado = new Teclado();
   teclado->init();
 
-  int impulse = 0;
-  int deltaT =1;
-  int food_counter = 0;
+  int impulse = 0; // speed up snake
+  int deltaT =1; // lock delta time in 1, in order to guarantee a discrete variation
+  int food_counter = 58;
+  bool exit = false; 
   while (1) {
+
+    // food_pos == (-1, don't care) means that there is no food at the arena 
     if (f->food_pos.x == -1){
       food_counter++;
       f->feed_snake();
-      
-      if (food_counter == 10){
-      soundboard_player->play(asamples[14]);
-      }
-      else if (food_counter == 20){
-        soundboard_player->play(asamples[12]);
-      }
-      else if (food_counter == 40){
-        soundboard_player->play(asamples[11]);
-      }
-      else if (food_counter > 1){
-        soundboard_player->play(asamples[4]);
-        asamples[4]->set_position(0);
-      }
-      /*else if (food_counter == 1){
-        soundboard_player->play(asamples[8]);
-      }*/
+      soundboard_interaction(food_counter, asamples, soundboard_player);
     }
 
-    // Atualiza modelo
+    // update model
     if(f->update(deltaT) && deltaT!=0) {
       soundboard_player->play(asamples[5]);
       std::this_thread::sleep_for (std::chrono::milliseconds(3000));
-      clear();
-      move((int)LINES/2, -10 + (int)COLS/2);
-      printw("GAME OVER");
-      move((int)LINES/2 + 1, -10 +(int)COLS/2);
-      printw("PRESS SOMETHING TO EXIT");
-      refresh();
-      getch();
+      game_over_msg();
       break;
     }
 
-    // Atualiza tela
+    // update screen
     tela->update();
 
-    // Lê o teclado
+    // read keys from keyboard
     int c = teclado->getchar();
-    switch (c){
-      case KEY_DOWN:
-        f->change_dir(0,0);
-        asamples[3]->set_position(0);
-        break;
-      case KEY_LEFT:
-        f->change_dir(1,0);
-        asamples[3]->set_position(0);
-        break;
-      case KEY_UP:
-        f->change_dir(2,0);
-        asamples[3]->set_position(0);
-        break;
-      case KEY_RIGHT:
-        f->change_dir(3,0);
-        asamples[3]->set_position(0);
-        break;
-      case '\n':
-        impulse = 50;
-        soundboard_player->play(asamples[15]);
-        if (asamples[15]->finished()){
-          asamples[15]->set_position(0);
-        }
-        break;
-      case 'm':
-      case 'M':
-        soundboard_player->volume = !soundboard_player->volume;
-        button_player->volume = !button_player->volume;
-        break;
-    }
+    exit = keyboard_map(c, asamples, button_player, soundboard_player, f, &impulse);
     
-    if (c==27){
-      soundboard_player->play(asamples[6]);
-      clear();
-      move((int)LINES/2, (int)COLS/2);
-      printw("BYE BYE");
-      move((int)LINES/2 + 1, (int)COLS/2);
-      printw("COME BACK SOON");
-      refresh();
-      std::this_thread::sleep_for (std::chrono::milliseconds(3000));
+    if (exit)
       break;
-    }
-
+    
     std::this_thread::sleep_for (std::chrono::milliseconds(100 - impulse));
     impulse = 0;
   }
 
-  //asmpl_thread.join();
+  // terminate objects properly
   button_player->stop();
   soundboard_player->stop();
   tela->stop();
   teclado->stop();
   return 0;
+}
+
+void exit_msg(){
+  clear();
+  move((int)LINES/2, (int)COLS/2);
+  printw("BYE BYE");
+  move((int)LINES/2 + 1, (int)COLS/2);
+  printw("COME BACK SOON");
+  refresh();
+  return;
+}
+
+bool keyboard_map(int c, std::vector<Audio::Sample* > asamples, Audio::Player *button_player, \
+                  Audio::Player *soundboard_player, Fisica *f, int *impulse){
+  switch (c){
+    case KEY_DOWN:
+      // head goes down
+      f->change_dir(0,0);
+      asamples[3]->set_position(0);
+      break;
+    case KEY_LEFT:
+      // head goes left
+      f->change_dir(1,0);
+      asamples[3]->set_position(0);
+      break;
+    case KEY_UP:
+      // head goes up
+      f->change_dir(2,0);
+      asamples[3]->set_position(0);
+      break;
+    case KEY_RIGHT:
+      // head goes right
+      f->change_dir(3,0);
+      asamples[3]->set_position(0);
+      break;
+    case '\n':
+      // speed up snake
+      *impulse = 50;
+      soundboard_player->play(asamples[15]);
+      if (asamples[15]->finished()){
+        asamples[15]->set_position(0);
+      }
+      break;
+    case 'm':
+    case 'M':
+      // turn on/off audio
+      soundboard_player->volume = !soundboard_player->volume;
+      button_player->volume = !button_player->volume;
+      break;
+    case 27:
+      // terminate game
+      soundboard_player->play(asamples[6]);
+      exit_msg();
+      std::this_thread::sleep_for (std::chrono::milliseconds(3000));
+      return true;
+  }
+  return false;
+}
+
+void game_over_msg(){
+  clear();
+  move((int)LINES/2, -10 + (int)COLS/2);
+  printw("GAME OVER");
+  move((int)LINES/2 + 1, -10 +(int)COLS/2);
+  printw("PRESS SOMETHING TO EXIT");
+  refresh();
+  getch();
+  return;
+}
+
+void soundboard_interaction(int food_counter, std::vector<Audio::Sample*> asamples, Audio::Player *soundboard_player){
+  if (food_counter == 10){
+    soundboard_player->play(asamples[14]);
+  }
+  else if (food_counter == 20){
+    soundboard_player->play(asamples[12]);
+  }
+  else if (food_counter == 40){
+    soundboard_player->play(asamples[11]);
+  }
+  else if(food_counter == 60){
+    soundboard_player->play(asamples[2]);
+  }
+  else if (food_counter > 1){
+    soundboard_player->play(asamples[4]);
+    asamples[4]->set_position(0);
+  }
+  /*else if (food_counter == 1){
+    soundboard_player->play(asamples[8]);
+  }*/
+  return;
 }
 
 uint64_t get_now_ms() {
@@ -165,7 +210,10 @@ void init_asamples(std::vector<Audio::Sample*> *asamples){
   for (int i = 0; i < asamples->size(); i++){
     (*asamples)[i] = new Audio::Sample();
   }
-
+  /*
+  the two first positions are reserved for background songs that were not chosen yet
+  */
+  (*asamples)[2]->load("audio/assets/Ce_e_o_bichao.dat");
   (*asamples)[3]->load("audio/assets/blip.dat");
   (*asamples)[4]->load("audio/assets/bite.dat");
   (*asamples)[5]->load("audio/assets/naovaidar.dat");

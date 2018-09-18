@@ -27,9 +27,9 @@ class Tela {
   public:
     Tela(ListaDeSnakes *lds, pos_2d *food_pos, int maxI, int maxJ, float maxX, float maxY);
     ~Tela();
-    void stop();
-    void init();
-    void update();
+    void stop(); // stop screen
+    void init(); // init screen
+    void update(); // update screen
 };
 
 #endif
