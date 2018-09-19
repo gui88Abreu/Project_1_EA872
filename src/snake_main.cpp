@@ -23,6 +23,7 @@ void soundboard_interaction(int food_counter, std::vector<Audio::Sample*> asampl
 bool keyboard_map(int c, std::vector<Audio::Sample* > asamples, Audio::Player *button_player, // choose what happens according with c
                   Audio::Player *soundboard_player, Fisica *f, int *impulse);
 Snake *create_snake(); // create snake
+void record_msg(int record);
 
 int main (){
 
@@ -54,11 +55,18 @@ int main (){
   Teclado *teclado = new Teclado();
   teclado->init();
 
+  FILE *stat_file = fopen("statistics/stat", "r");
+  int record = 0;
+  if (stat_file){
+    fscanf(stat_file, "%d", &record);
+    fclose(stat_file);
+  }
+  
   int impulse = 0; // speed up snake
   int deltaT =1; // lock delta time in 1, in order to guarantee a discrete variation
-  int food_counter = 0;
-  bool exit = false; 
-  while (1) {
+  int food_counter = -1;
+  bool exit = false;
+  while (!exit) {
 
     // food_pos == (-1, don't care) means that there is no food at the arena 
     if (f->food_pos.x == -1){
@@ -82,12 +90,21 @@ int main (){
     int c = teclado->getchar();
     exit = keyboard_map(c, asamples, button_player, soundboard_player, f, &impulse);
     
-    if (exit)
-      break;
-    
     std::this_thread::sleep_for (std::chrono::milliseconds(100 - impulse));
     impulse = 0;
   }
+
+  if (food_counter > record){
+    FILE *stat_file = fopen("statistics/stat", "w");
+    fprintf(stat_file, "%d", food_counter);
+    fclose(stat_file);
+    record_msg(food_counter);
+  }
+  else{
+    record_msg(record);
+  }
+
+  std::this_thread::sleep_for (std::chrono::milliseconds(5000));
 
   // terminate objects properly
   button_player->stop();
@@ -97,11 +114,27 @@ int main (){
   return 0;
 }
 
+void game_over_msg(){
+  clear();
+  move((int)LINES/2, -10 + (int)COLS/2);
+  printw("GAME OVER");
+  refresh();
+  return;
+}
+
+
+void record_msg(int record){
+  move((int)LINES/2 + 3, -10 + (int)COLS/2);
+  printw("RECORD: %d", record);
+  refresh();
+  return;
+}
+
 void exit_msg(){
   clear();
-  move((int)LINES/2, (int)COLS/2);
+  move((int)LINES/2, -10 + (int)COLS/2);
   printw("BYE BYE");
-  move((int)LINES/2 + 1, (int)COLS/2);
+  move((int)LINES/2 + 1, -10 + (int)COLS/2);
   printw("COME BACK SOON");
   refresh();
   return;
@@ -148,21 +181,9 @@ bool keyboard_map(int c, std::vector<Audio::Sample* > asamples, Audio::Player *b
       // terminate game
       soundboard_player->play(asamples[6]);
       exit_msg();
-      std::this_thread::sleep_for (std::chrono::milliseconds(3000));
       return true;
   }
   return false;
-}
-
-void game_over_msg(){
-  clear();
-  move((int)LINES/2, -10 + (int)COLS/2);
-  printw("GAME OVER");
-  move((int)LINES/2 + 1, -10 +(int)COLS/2);
-  printw("PRESS SOMETHING TO EXIT");
-  refresh();
-  getch();
-  return;
 }
 
 void soundboard_interaction(int food_counter, std::vector<Audio::Sample*> asamples, Audio::Player *soundboard_player){

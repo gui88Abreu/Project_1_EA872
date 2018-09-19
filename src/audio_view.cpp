@@ -50,6 +50,12 @@ int mix_and_play (const void *inputBuffer, void *outputBuffer,
     }
     s->set_position(pos);
   }
+  else{
+    // Fill the buffer with samples!
+    for (int i=0; (i<framesPerBuffer); i++) {
+      buffer[i] = 0;
+    }  
+  }
   return 0;
 }
 
