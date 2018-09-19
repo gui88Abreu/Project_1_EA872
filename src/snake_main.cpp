@@ -56,7 +56,7 @@ int main (){
 
   int impulse = 0; // speed up snake
   int deltaT =1; // lock delta time in 1, in order to guarantee a discrete variation
-  int food_counter = 58;
+  int food_counter = 0;
   bool exit = false; 
   while (1) {
 
