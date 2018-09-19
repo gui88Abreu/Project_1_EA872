@@ -18,7 +18,7 @@ In order to run the game, in root folder just type on the line command **make ru
 
 - ARROW KEYS: Move snake
 
-- Enter: Speed up snake
+- ENTER: Speed up snake
 
 - ESC: Exit game
 
