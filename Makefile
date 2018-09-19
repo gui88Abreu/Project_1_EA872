@@ -3,6 +3,7 @@ CC = g++
 CFLAGS = -std=c++11 -lncurses -lpthread -lportaudio
 ASSETS_ZIP = audio/assets/assets.zip
 ASSETS_DIR = audio/assets
+STAT_DIR = statistics
 DIR = src
 TARGET = snake\ single\ player
 SRCS := $(shell find $(DIR) -name '*.cpp')
@@ -28,3 +29,4 @@ clean:
 	$(RM) ./$(TARGET)
 	$(RM) $(DIR)/*.o
 	$(RM) $(ASSETS_DIR)/*.dat
+	$(RM) $(STAT_DIR)/*
