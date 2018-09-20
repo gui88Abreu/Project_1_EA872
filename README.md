@@ -14,7 +14,7 @@ In order to run the game, in root folder just type on the line command **make ru
 
 ## Keyboard Map
 
-- M or m: Turn on/off sound
+- M/m: Turn on/off sound
 
 - ARROW KEYS: Move snake
 
