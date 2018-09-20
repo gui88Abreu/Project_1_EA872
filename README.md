@@ -24,7 +24,7 @@ In order to run the game, in root folder just type on the line command **make ru
 
 ## Rules
 
-The game starts with a snake with 8 bodies of length. According as the snake eats its body's grows. The borders of the screen can not kill the snake, i.e, the only way to reach game over is eating itself.
+The game starts with a snake with 50 bodies of length. According as the snake eats its body grows. The borders of the screen can kill the snake, i.e, there are two ways to reach game over, which is eating itself or crashing against the borders.
 
 ## Cleaning Game Space
 
