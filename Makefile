@@ -29,4 +29,4 @@ clean:
 	$(RM) ./$(TARGET)
 	$(RM) $(DIR)/*.o
 	$(RM) $(ASSETS_DIR)/*.dat
-	$(RM) $(STAT_DIR)/*
+	$(RM) $(STAT_DIR)/*.est
