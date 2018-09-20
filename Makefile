@@ -1,6 +1,8 @@
 # Macros para compilacao
 CC = g++
-CFLAGS = -std=c++11 -lncurses -lpthread -lportaudio
+CFLAGS = -std=c++11 -lpthread 
+NCURSES_FLAGS = -lncurses
+PORTAUDIO_FLAGS = -lportaudio -ljack -lrt -lasound -lm
 ASSETS_ZIP = audio/assets/assets.zip
 ASSETS_DIR = audio/assets
 STAT_DIR = statistics
@@ -14,16 +16,16 @@ OBJS = $(SRCS:.c=.o)
 all:$(TARGET)
 
 $(TARGET):$(OBJS)
-	$(CC) -o$(TARGET) $(OBJS) $(CFLAGS)
+	$(CC) -o$(TARGET) $(OBJS) $(CFLAGS) $(NCURSES_FLAGS) $(PORTAUDIO_FLAGS)
 
 %.o:%.cpp
 	$(CC) $(SRCS) $(CFLAGS) -c $< -o $@
 
-run:all extract
+run:all sound
 	./$(TARGET)
 
-extract:
-	unzip $(ASSETS_ZIP) -d $(ASSETS_DIR)/
+sound:
+	unzip -n $(ASSETS_ZIP) -d $(ASSETS_DIR)/
 
 clean:
 	$(RM) ./$(TARGET)
