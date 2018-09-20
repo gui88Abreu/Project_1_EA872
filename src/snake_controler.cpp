@@ -92,6 +92,7 @@ bool Fisica::update(float deltaT) {
     
     // verify if snake got hited by itself
     if(this->verify_selfkill(c))
+      selfkill = true;
       break;
     
     // increase snake size or not
