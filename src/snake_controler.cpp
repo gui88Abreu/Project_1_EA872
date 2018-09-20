@@ -75,17 +75,13 @@ bool Fisica::update(float deltaT) {
     new_pos.y = last_pos[0].y + deltaT *vel.y;
 
     // borders coditions
-    if (new_pos.x < 0) {
-      new_pos.x  = COLS-1;
+    if ((new_pos.x < 0) || (new_pos.y < 0)){
+      selfkill = true;
+      break;
     }
-    if (new_pos.y < 0){
-      new_pos.y  = LINES-1;
-    }
-    if (new_pos.x >= COLS) {
-      new_pos.x  = 0;
-    }
-    if (new_pos.y >= LINES){
-      new_pos.y  = 0;
+    if ((new_pos.x >= COLS) || (new_pos.y >= LINES)){
+      selfkill = true;
+      break;
     }
 
     // update snake position
@@ -95,7 +91,8 @@ bool Fisica::update(float deltaT) {
     (*c)[0]->update(vel, new_pos);
     
     // verify if snake got hited by itself
-    selfkill = this->verify_selfkill(c);
+    if(this->verify_selfkill(c))
+      break;
     
     // increase snake size or not
     if (this->verify_snake_ate(c)){

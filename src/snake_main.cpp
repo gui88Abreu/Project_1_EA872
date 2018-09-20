@@ -21,7 +21,7 @@ void game_over_msg(); // print game over message
 void exit_msg(); // print exit message
 void soundboard_interaction(int food_counter, std::vector<Audio::Sample*> asamples, Audio::Player *soundboard_player); // define which soundboard to play
 bool keyboard_map(int c, std::vector<Audio::Sample* > asamples, Audio::Player *button_player, // choose what happens according with c
-                  Audio::Player *soundboard_player, Fisica *f, int *impulse);
+                  Audio::Player *soundboard_player, Audio::Player *background_player, Fisica *f, int *impulse);
 Snake *create_snake(unsigned int length); // create snake with length bodys
 void record_msg(int record);
 
@@ -32,9 +32,11 @@ int main (){
   init_asamples(&asamples);
 
   // init players
-  Audio::Player *button_player, *soundboard_player;
-  button_player = new Audio::Player(), soundboard_player = new Audio::Player();
+  Audio::Player *button_player, *soundboard_player, *background_player;
+  button_player = new Audio::Player(), soundboard_player = new Audio::Player(); 
+  background_player = new Audio::Player();  
   button_player->init(44100, 64, 0.6), soundboard_player->init(44100, 256, 2.5);
+  background_player->init(44100, 2048, 0.2);
 
   // ensure that button_player won't play at the beginning of the game
   asamples[3]->set_position(INT32_MAX);
@@ -67,6 +69,8 @@ int main (){
   int deltaT =1; // lock delta time in 1, in order to guarantee a discrete variation
   int food_counter = -1;
   bool exit = false;
+
+  background_player->play(asamples[1]);
   while (!exit) {
 
     // food_pos == (-1, don't care) means that there is no food at the arena 
@@ -75,6 +79,9 @@ int main (){
       f->feed_snake();
       soundboard_interaction(food_counter, asamples, soundboard_player);
     }
+
+    if (asamples[1]->finished())
+      asamples[1]->set_position(0);
 
     // update model
     if(f->update(deltaT) && deltaT!=0) {
@@ -89,7 +96,7 @@ int main (){
 
     // read keys from keyboard
     int c = teclado->getchar();
-    exit = keyboard_map(c, asamples, button_player, soundboard_player, f, &impulse);
+    exit = keyboard_map(c, asamples, button_player, soundboard_player, background_player, f, &impulse);
     
     std::this_thread::sleep_for (std::chrono::milliseconds(100 - impulse));
     impulse = 0;
@@ -108,6 +115,7 @@ int main (){
   std::this_thread::sleep_for (std::chrono::milliseconds(5000));
 
   // terminate objects properly
+  background_player->stop();
   button_player->stop();
   soundboard_player->stop();
   tela->stop();
@@ -142,7 +150,7 @@ void exit_msg(){
 }
 
 bool keyboard_map(int c, std::vector<Audio::Sample* > asamples, Audio::Player *button_player, \
-                  Audio::Player *soundboard_player, Fisica *f, int *impulse){
+                  Audio::Player *soundboard_player, Audio::Player *background_player, Fisica *f, int *impulse){
   switch (c){
     case KEY_DOWN:
       // head goes down
@@ -171,6 +179,18 @@ bool keyboard_map(int c, std::vector<Audio::Sample* > asamples, Audio::Player *b
       if (asamples[15]->finished()){
         asamples[15]->set_position(0);
       }
+      break;
+    case 'I':
+    case 'i':
+      background_player->volume++;
+      if (background_player->volume > 2)
+        background_player->volume = 2;
+      break;
+    case 'D':
+    case 'd':
+      background_player->volume--;
+      if (background_player->volume <= 0)
+        background_player->volume = 0;
       break;
     case 'm':
     case 'M':
@@ -233,8 +253,9 @@ void init_asamples(std::vector<Audio::Sample*> *asamples){
     (*asamples)[i] = new Audio::Sample();
   }
   /*
-  the two first positions are reserved for background songs that were not chosen yet
+  the first position is reserved for background songs that were not chosen yet
   */
+  (*asamples)[1]->load("audio/assets/sonic_theme.dat");
   (*asamples)[2]->load("audio/assets/Ce_e_o_bichao.dat");
   (*asamples)[3]->load("audio/assets/blip.dat");
   (*asamples)[4]->load("audio/assets/bite.dat");
