@@ -22,7 +22,7 @@ void exit_msg(); // print exit message
 void soundboard_interaction(int food_counter, std::vector<Audio::Sample*> asamples, Audio::Player *soundboard_player); // define which soundboard to play
 bool keyboard_map(int c, std::vector<Audio::Sample* > asamples, Audio::Player *button_player, // choose what happens according with c
                   Audio::Player *soundboard_player, Fisica *f, int *impulse);
-Snake *create_snake(); // create snake
+Snake *create_snake(unsigned int length); // create snake with length bodys
 void record_msg(int record);
 
 int main (){
@@ -40,7 +40,7 @@ int main (){
   asamples[3]->set_position(INT32_MAX);
   button_player->play(asamples[3]);
 
-  Snake *snake = create_snake();
+  Snake *snake = create_snake(50);
   
   // add snake into snake list and associate a physical model to it
   ListaDeSnakes *l = new ListaDeSnakes();
@@ -55,7 +55,8 @@ int main (){
   Teclado *teclado = new Teclado();
   teclado->init();
 
-  FILE *stat_file = fopen("statistics/stat", "r");
+  std::string stat_filename = "statistics/stat.est";
+  FILE *stat_file = fopen(stat_filename.data(), "r");
   int record = 0;
   if (stat_file){
     fscanf(stat_file, "%d", &record);
@@ -95,7 +96,7 @@ int main (){
   }
 
   if (food_counter > record){
-    FILE *stat_file = fopen("statistics/stat", "w");
+    FILE *stat_file = fopen(stat_filename.data(), "w");
     fprintf(stat_file, "%d", food_counter);
     fclose(stat_file);
     record_msg(food_counter);
@@ -199,7 +200,7 @@ void soundboard_interaction(int food_counter, std::vector<Audio::Sample*> asampl
   else if(food_counter == 60){
     soundboard_player->play(asamples[2]);
   }
-  else if (food_counter > 1){
+  else if (food_counter > 0){
     soundboard_player->play(asamples[4]);
     asamples[4]->set_position(0);
   }
@@ -213,12 +214,12 @@ uint64_t get_now_ms() {
   return duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count();
 }
 
-Snake *create_snake(){
+Snake *create_snake(unsigned int length){
   pos_2d p = {40,40};
   vel_2d v = {(float)VEL,0};
 
   Snake *snake = new Snake();
-  for (int i =0; i < 8; i++){
+  for (int i =0; i < length; i++){
     Corpo *c = new Corpo(v, p);
     snake->add_corpo(c);
     p.x-=1;
