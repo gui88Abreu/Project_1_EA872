@@ -2,9 +2,9 @@
 
 ## Dependencies
 
-In order to be able to compile and run the game, please, install the follow packages on your system:
+In order to be able to compile and run the game, please, install the follow packages on your linux system:
 
-- **libportaudiocpp0**
+- **portaudio**
 
 - **ncurses**
 
