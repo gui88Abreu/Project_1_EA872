@@ -10,7 +10,7 @@ In order to be able to compile and run the game, please, install the follow pack
 
 ## Running the Game
 
-In order to run the game, in root folder just type on the line command **make run**. Ensure that all dependencies are installed.
+In order to run the game, in root folder just type on the line command **make run**. Ensure that all dependencies are installed. Please, before running the game, maximize your terminal console. The whole game is played at the terminal, so the performance depends of your terminal configurations too.
 
 ## Keyboard Map
 
