@@ -196,6 +196,7 @@ bool keyboard_map(int c, std::vector<Audio::Sample* > asamples, Audio::Player *b
     case 'M':
       // turn on/off audio
       background_player->volume =  !background_player->volume;
+      if (background_player->volume > 0) background_player->volume = 0.5;
       soundboard_player->volume = !soundboard_player->volume;
       button_player->volume = !button_player->volume;
       break;
