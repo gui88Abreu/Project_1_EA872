@@ -1,16 +1,20 @@
 # Snake Game Single Player
 
+## Downloading Files
+
+Due the audio files being too large, it is necessary download the audio folder separately. After that, and after dependencies has been installed, you will be able to run the game properly.
+
 ## Dependencies
 
 In order to be able to compile and run the game, please, install the follow packages on your linux system:
 
-- **portaudio**
+- **portaudio**. For Ubuntu systems, execute this line command on your terminal: **sudo apt-get install portaudio19-dev**
 
-- **ncurses**
+- **ncurses**. For Ubuntu systems, execute this line command on your terminal: **sudo apt-get install libncurses-dev**
 
 ## Running the Game
 
-In order to run the game, in root folder just type on the line command **make run**. Ensure that all dependencies are installed.
+In order to run the game, in root folder just type on the line command **make run**. Ensure that all dependencies are installed. Please, before running the game, maximize your terminal console. The whole game is played at the terminal, so the performance depends of your terminal configurations too.
 
 ## Keyboard Map
 
