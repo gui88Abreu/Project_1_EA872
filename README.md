@@ -1,9 +1,5 @@
 # Snake Game Single Player
 
-## Downloading Files
-
-Due the audio files being too large, it is necessary download the audio folder separately. After that, and after dependencies has been installed, you will be able to run the game properly.
-
 ## Dependencies
 
 In order to be able to compile and run the game, please, install the follow packages on your linux system:
@@ -19,6 +15,10 @@ In order to run the game, in root folder just type on the line command **make ru
 ## Keyboard Map
 
 - M/m: Turn on/off sound
+
+- I/i: Increase background music volume
+
+- D/d: Decrease background music volume
 
 - ARROW KEYS: Move snake
 
