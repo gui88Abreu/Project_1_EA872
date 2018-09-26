@@ -69,7 +69,7 @@ int main (){
   int deltaT =1; // lock delta time in 1, in order to guarantee a discrete variation
   int food_counter = -1;
   bool exit = false;
-
+  int interation = 0;
   background_player->play(asamples[1]);
   while (!exit) {
 
@@ -98,8 +98,18 @@ int main (){
     int c = teclado->getchar();
     exit = keyboard_map(c, asamples, button_player, soundboard_player, background_player, f, &impulse);
     
+    if (interation > 40)
+      impulse = 0;
+
     std::this_thread::sleep_for (std::chrono::milliseconds(100 - impulse));
-    impulse = 0;
+    
+    if (impulse || interation){
+      if (interation == 40)
+        impulse = 0;
+      else if (interation == 50)
+        interation = -1;
+      interation++;
+    }
   }
 
   if (food_counter > record){
@@ -172,9 +182,10 @@ bool keyboard_map(int c, std::vector<Audio::Sample* > asamples, Audio::Player *b
       f->change_dir(3,0);
       asamples[3]->set_position(0);
       break;
-    case '\n':
+    case ' ':
       // speed up snake
-      *impulse = 50;
+      if (!(*impulse))
+        *impulse = 50;
       soundboard_player->play(asamples[15]);
       if (asamples[15]->finished()){
         asamples[15]->set_position(0);
@@ -263,13 +274,13 @@ void init_asamples(std::vector<Audio::Sample*> *asamples){
   (*asamples)[4]->load("audio/assets/bite.dat");
   (*asamples)[5]->load("audio/assets/naovaidar.dat");
   (*asamples)[6]->load("audio/assets/get_over_here.dat");
-  (*asamples)[7]->load("audio/assets/come_here.dat");
-  (*asamples)[8]->load("audio/assets/mortal_kombat_theme.dat");
-  (*asamples)[9]->load("audio/assets/finish_him.dat");
-  (*asamples)[10]->load("audio/assets/finish_her.dat");
+  //(*asamples)[7]->load("audio/assets/come_here.dat");
+  //(*asamples)[8]->load("audio/assets/mortal_kombat_theme.dat");
+  //(*asamples)[9]->load("audio/assets/finish_him.dat");
+  //(*asamples)[10]->load("audio/assets/finish_her.dat");
   (*asamples)[11]->load("audio/assets/fatality.dat");
   (*asamples)[12]->load("audio/assets/animality.dat");
-  (*asamples)[13]->load("audio/assets/soul_suffer.dat");
+  //(*asamples)[13]->load("audio/assets/soul_suffer.dat");
   (*asamples)[14]->load("audio/assets/brutality.dat");
   (*asamples)[15]->load("audio/assets/mario_star.dat");
   return;
