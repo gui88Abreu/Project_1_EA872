@@ -22,7 +22,7 @@ $(TARGET):$(OBJS)
 	$(CC) $(SRCS) $(CFLAGS) -c $< -o $@
 
 run:all sound
-	./$(TARGET)
+	./$(TARGET) 2>/dev/null
 
 sound:
 	unzip -n $(ASSETS_ZIP) -d $(ASSETS_DIR)/
