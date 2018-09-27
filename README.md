@@ -22,7 +22,7 @@ In order to run the game, in root folder just type on the line command **make ru
 
 - ARROW KEYS: Move snake
 
-- ENTER: Speed up snake
+- SPACE BAR: Speed up snake for a little piece of time
 
 - ESC: Exit game
 
@@ -33,47 +33,3 @@ The game starts with a snake with 50 bodies of length. According as the snake ea
 ## Cleaning Game Space
 
 In order to remove files created during the game and reset statistics, in root folder type on the line command **make clean**.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
