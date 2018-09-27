@@ -1,5 +1,6 @@
 #include "../include/model/snake_model.hpp"
 #include "../include/view/snake_view.hpp"
+#include <stdlib.h>
 
 Tela::Tela(ListaDeSnakes *lds, pos_2d *food_pos, int maxI, int maxJ, float maxX, float maxY) {
   this->food_pos = food_pos;
@@ -8,6 +9,7 @@ Tela::Tela(ListaDeSnakes *lds, pos_2d *food_pos, int maxI, int maxJ, float maxX,
   this->maxJ = maxJ;
   this->maxX = maxX;
   this->maxY = maxY;
+  blink = false;
 }
 
 void Tela::init() {
@@ -18,9 +20,12 @@ void Tela::init() {
 
   /*init color mode on the screen*/
   start_color();
-  init_pair(SNAKE_PAIR, COLOR_GREEN, COLOR_BLACK);
-  init_pair(FOOD_PAIR, COLOR_RED, COLOR_BLACK);
-  init_pair(MSG_PAIR, COLOR_BLUE, COLOR_WHITE);
+  init_pair(SNAKE_PAIR, COLOR_RED, COLOR_WHITE);
+  init_pair(FOOD_PAIR, COLOR_GREEN, COLOR_WHITE);
+  init_pair(MSG_PAIR, COLOR_BLUE, COLOR_YELLOW);
+  init_pair(BG_PAIR, COLOR_WHITE, COLOR_WHITE);
+
+  if (bkgd(COLOR_PAIR( BG_PAIR)) == !OK) exit(EXIT_FAILURE);
 }
 
 void Tela::update() {
