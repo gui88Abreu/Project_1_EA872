@@ -16,6 +16,7 @@ RA: 173691
 
 #define SNAKE_PAIR 1
 #define FOOD_PAIR 2
+#define MSG_PAIR 3
 
 class Tela {
   private:
