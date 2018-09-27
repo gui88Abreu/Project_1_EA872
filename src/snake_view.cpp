@@ -20,6 +20,7 @@ void Tela::init() {
   start_color();
   init_pair(SNAKE_PAIR, COLOR_GREEN, COLOR_BLACK);
   init_pair(FOOD_PAIR, COLOR_RED, COLOR_BLACK);
+  init_pair(MSG_PAIR, COLOR_BLUE, COLOR_WHITE);
 }
 
 void Tela::update() {

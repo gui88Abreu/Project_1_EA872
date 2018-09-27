@@ -15,6 +15,8 @@
 
 using namespace std::chrono;
 
+bool bg_enable;
+
 uint64_t get_now_ms();
 void init_asamples(std::vector<Audio::Sample*> *asamples); // init asamples
 void game_over_msg(); // print game over message
@@ -24,8 +26,26 @@ bool keyboard_map(int c, std::vector<Audio::Sample* > asamples, Audio::Player *b
                   Audio::Player *soundboard_player, Audio::Player *background_player, Fisica *f, int *impulse);
 Snake *create_snake(unsigned int length); // create snake with length bodys
 void record_msg(int record);
+void bg_music_msg();
 
 int main (){
+  Snake *snake = create_snake(50);
+  
+  // add snake into snake list and associate a physical model to it
+  ListaDeSnakes *l = new ListaDeSnakes();
+  l->add_snake(snake);
+  Fisica *f = new Fisica(l);
+
+  // begin screen
+  Tela *tela = new Tela(l, &f->food_pos, 20, 20, 20, 20);
+  tela->init();
+  
+  // give the option of do  not load background music file
+  bg_music_msg();
+
+  // begin keyboard interface
+  Teclado *teclado = new Teclado();
+  teclado->init();
 
   // init asamples
   std::vector<Audio::Sample* > asamples(16);
@@ -42,21 +62,6 @@ int main (){
   asamples[3]->set_position(INT32_MAX);
   button_player->play(asamples[3]);
 
-  Snake *snake = create_snake(50);
-  
-  // add snake into snake list and associate a physical model to it
-  ListaDeSnakes *l = new ListaDeSnakes();
-  l->add_snake(snake);
-  Fisica *f = new Fisica(l);
-
-  // begin screen
-  Tela *tela = new Tela(l, &f->food_pos, 20, 20, 20, 20);
-  tela->init();
-
-  // begin keyboard interface
-  Teclado *teclado = new Teclado();
-  teclado->init();
-
   std::string stat_filename = "statistics/stat.est";
   FILE *stat_file = fopen(stat_filename.data(), "r");
   int record = 0;
@@ -70,7 +75,7 @@ int main (){
   int food_counter = -1;
   bool exit = false;
   int interation = 0;
-  background_player->play(asamples[1]);
+  if (bg_enable) background_player->play(asamples[1]);
   while (!exit) {
 
     // food_pos == (-1, don't care) means that there is no food at the arena 
@@ -80,7 +85,7 @@ int main (){
       soundboard_interaction(food_counter, asamples, soundboard_player);
     }
 
-    if (asamples[1]->finished())
+    if (bg_enable && asamples[1]->finished())
       asamples[1]->set_position(0);
 
     // update model
@@ -133,28 +138,66 @@ int main (){
   return 0;
 }
 
-void game_over_msg(){
+void bg_music_msg(){
+  bool ok = false;
+  attron(COLOR_PAIR(MSG_PAIR));
+  while (!ok){
+    move((int)LINES/2, -10 + (int)COLS/2);
+    printw("DO YOU WANNA LOAD BACKGROUND MUSIC? [Y/n]");
+    move((int)LINES/2 + 1, -10 + (int)COLS/2);
+    printw("KEEP IN MIND THAT BACKGROUND MUSIC IS VERY LARGE");
+    move((int)LINES/2 + 2, -10 + (int)COLS/2);
+    printw("AND IT CAN LAST TOO MUCH TIME TO LOAD IT.");
+    refresh();
+    char c = getch();
+    switch (c){
+      case 'Y':
+      case 'y':
+        bg_enable = true;
+        ok = true;
+        break;
+      case 'N':
+      case 'n':
+        bg_enable = false;
+        ok = true;
+        break;
+    }
+  }
   clear();
   move((int)LINES/2, -10 + (int)COLS/2);
+  printw("LOADING ...") ;
+  refresh();
+  attroff(COLOR_PAIR(MSG_PAIR));
+  return;
+}
+
+void game_over_msg(){
+  clear();
+  attron(COLOR_PAIR(MSG_PAIR));
+  move((int)LINES/2, -10 + (int)COLS/2);
   printw("GAME OVER");
+  attroff(COLOR_PAIR(MSG_PAIR));
   refresh();
   return;
 }
 
-
 void record_msg(int record){
+  attron(COLOR_PAIR(MSG_PAIR));
   move((int)LINES/2 + 3, -10 + (int)COLS/2);
   printw("RECORD: %d", record);
+  attroff(COLOR_PAIR(MSG_PAIR));
   refresh();
   return;
 }
 
 void exit_msg(){
   clear();
+  attron(COLOR_PAIR(MSG_PAIR));
   move((int)LINES/2, -10 + (int)COLS/2);
   printw("BYE BYE");
   move((int)LINES/2 + 1, -10 + (int)COLS/2);
   printw("COME BACK SOON");
+  attroff(COLOR_PAIR(MSG_PAIR));
   refresh();
   return;
 }
@@ -193,12 +236,14 @@ bool keyboard_map(int c, std::vector<Audio::Sample* > asamples, Audio::Player *b
       break;
     case 'I':
     case 'i':
+      if (!bg_enable) break;
       background_player->volume+=0.1;
       if (background_player->volume > 2)
         background_player->volume = 2;
       break;
     case 'D':
     case 'd':
+      if (!bg_enable) break;
       background_player->volume-=0.1;
       if (background_player->volume <= 0)
         background_player->volume = 0;
@@ -268,7 +313,7 @@ void init_asamples(std::vector<Audio::Sample*> *asamples){
   /*
   the first position is reserved for background songs that were not chosen yet
   */
-  (*asamples)[1]->load("audio/assets/sonic_theme.dat");
+  if (bg_enable) (*asamples)[1]->load("audio/assets/sonic_theme.dat");
   (*asamples)[2]->load("audio/assets/Ce_e_o_bichao.dat");
   (*asamples)[3]->load("audio/assets/blip.dat");
   (*asamples)[4]->load("audio/assets/bite.dat");
